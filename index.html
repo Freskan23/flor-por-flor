@@ -185,6 +185,91 @@ textarea{min-height:84px;resize:vertical}
 footer{position:relative;z-index:3;padding:36px var(--gr) 48px var(--gl);color:var(--muted);font-size:.9rem;border-top:1px solid color-mix(in srgb,var(--petal) 14%,transparent);background:color-mix(in srgb,var(--night) 80%,transparent)}
 footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:baseline}
 
+
+/* ===== probador (configurador a pantalla completa) ===== */
+.price-list{list-style:none;margin:0;padding:0;display:grid;gap:0;max-width:420px}
+.price-list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid color-mix(in srgb,var(--petal) 18%,transparent)}
+.price-list b{font-family:var(--f-display);font-weight:300;font-size:1.35rem}
+.price-list span{color:var(--muted);font-size:.92rem}
+.price-list .pr{font-family:var(--f-display);font-size:1.35rem;font-variant-numeric:tabular-nums;color:var(--ink)}
+body.in-studio{overflow:hidden}
+body.in-studio main, body.in-studio footer, body.in-studio .veil, body.in-studio .meter, body.in-studio .inbox{opacity:0;pointer-events:none;visibility:hidden}
+main, footer, .veil, .meter{transition:opacity .5s, visibility .5s}
+body.in-studio #stage{cursor:grab;touch-action:none}
+body.in-studio .bar nav{opacity:0;pointer-events:none}
+body.in-studio #stage.drag{cursor:grabbing}
+.studio{position:fixed;inset:0;z-index:15;pointer-events:none}
+.studio > *{pointer-events:auto}
+.st-tools{position:fixed;left:max(24px, env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-wrap:wrap;gap:8px}
+.chip{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:.86rem;font-weight:500;color:var(--ink);background:color-mix(in srgb,var(--night) 55%,transparent);border:1px solid color-mix(in srgb,var(--petal) 22%,transparent);border-radius:999px;padding:.5em 1em;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .2s,background .2s}
+.chip:hover{border-color:var(--petal)}
+.chip.on,.chip[aria-pressed="true"]{background:color-mix(in srgb,var(--petal) 92%,transparent);color:#2b0b28;border-color:var(--petal)}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.st-ruler{position:fixed;left:0;top:0;width:1px;height:10px;pointer-events:none;border-left:1px dashed color-mix(in srgb,var(--petal) 55%,transparent);transition:opacity .4s}
+.st-ruler::before,.st-ruler::after{content:"";position:absolute;left:-6px;width:11px;border-top:1px solid color-mix(in srgb,var(--petal) 70%,transparent)}
+.st-ruler::before{top:0}.st-ruler::after{bottom:0}
+.st-ruler b{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-family:var(--f-hand);font-weight:700;font-size:1.5rem;color:var(--petal);white-space:nowrap;text-shadow:0 1px 12px var(--night)}
+.st-hint{position:fixed;left:0;top:0;font-size:1.35rem;opacity:.85;pointer-events:none;white-space:nowrap;transition:opacity .6s;transform:translateX(-50%)}
+.st-panel{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);right:max(20px, env(safe-area-inset-right,0px));bottom:20px;width:400px;display:flex;flex-direction:column;background:color-mix(in srgb,var(--night-2) 78%,transparent);border:1px solid color-mix(in srgb,var(--petal) 16%,transparent);border-radius:24px;backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);box-shadow:0 30px 100px -30px rgba(0,0,0,.6);overflow:hidden;animation:panelIn .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes panelIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.st-grab{display:none}
+.st-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:22px 24px 6px}
+.st-head h2{font-size:1.9rem}
+.st-x{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:1rem;cursor:pointer}
+.st-x:hover{border-color:var(--petal)}
+#order-slot{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+.studio form{padding:10px 24px 22px;gap:0}
+.st-step{display:grid;gap:20px}
+.sizes-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sz{position:relative;min-width:0}
+.sz input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.sz span{display:grid;justify-items:center;gap:2px;padding:12px 6px 10px;border-radius:16px;border:1px solid var(--line);background:color-mix(in srgb,var(--night) 50%,transparent);cursor:pointer;transition:border-color .2s,box-shadow .25s;text-align:center;height:100%;align-content:end}
+.sz svg{display:block;margin-bottom:4px}
+.sz b{font-weight:600;font-size:.95rem}
+.sz small{color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums}
+.sz input:checked + span{border-color:var(--petal);box-shadow:0 0 0 1px var(--petal),0 0 30px -8px var(--glow)}
+.sz input:focus-visible + span{outline:2px solid var(--glow);outline-offset:2px}
+legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:6px}
+.swatches{display:flex;gap:18px}
+.sw-o{position:relative;display:grid;justify-items:center;gap:6px;cursor:pointer}
+.sw-o input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.sw-o i{width:48px;height:48px;border-radius:50%;display:block;box-shadow:inset 0 0 0 3px var(--night-2),0 0 0 1px var(--line);transition:box-shadow .25s,transform .25s}
+.sw-o small{font-size:.8rem;color:var(--muted)}
+.sw-o input:checked + i{box-shadow:inset 0 0 0 3px var(--night-2),0 0 0 2px var(--petal),0 0 26px var(--glow);transform:scale(1.06)}
+.sw-o input:focus-visible + i{outline:2px solid var(--glow);outline-offset:4px}
+.st-paint{display:flex;align-items:center;gap:12px;margin:0}
+.st-paint .hand{font-size:1.35rem;white-space:nowrap}
+.st-paint .bar-p{flex:1;height:2px;background:color-mix(in srgb,var(--petal) 20%,transparent);border-radius:2px;overflow:hidden;display:block}
+.st-paint .bar-p i{display:block;height:100%;width:0;background:var(--glow);box-shadow:0 0 12px var(--glow)}
+.st-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.st-price{display:grid}
+.st-price .p{font-family:var(--f-display);font-size:2rem;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}
+.st-back{justify-self:start;background:none;border:0;color:var(--petal);font:inherit;font-size:.9rem;cursor:pointer;padding:0}
+.st-summary{color:var(--muted);margin:0}
+.st-summary b{color:var(--ink);font-weight:500}
+.studio .done{padding:22px 24px}
+@media (max-width:820px){
+  .st-tools{left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 66px);flex-wrap:nowrap}
+  .chip{font-size:.8rem;padding:.45em .85em}
+  .st-panel{left:0;right:0;bottom:0;top:auto;width:auto;max-height:46vh;border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);animation:sheetIn .55s cubic-bezier(.2,.8,.2,1) both;transition:max-height .45s cubic-bezier(.2,.8,.2,1)}
+  .studio.step2 .st-panel, .studio.done-step .st-panel{max-height:86vh}
+  @keyframes sheetIn{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .st-grab{display:block;width:40px;height:4px;border-radius:4px;background:var(--line);margin:8px auto 0}
+  .st-head{padding:8px 18px 0}
+  .st-head h2{font-size:1.35rem}
+  .st-head .eyebrow{font-size:.7rem}
+  .studio form{padding:8px 18px 16px}
+  .st-step{gap:14px}
+  .sz span{padding:8px 4px 8px;border-radius:12px}
+  .sz svg{display:none}
+  .swatches{gap:14px}
+  .sw-o i{width:38px;height:38px}
+  .st-paint{display:none}
+  .st-price .p{font-size:1.6rem}
+  .st-hint{font-size:1.15rem}
+  .st-ruler b{font-size:1.25rem}
+}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.hero h1 .paint{background-position:0 0}}
 </style>
 
@@ -206,7 +291,7 @@ footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;j
     <a href="#detalle">La flor</a>
     <a href="#proceso">Cómo lo hacemos</a>
     <a href="#preguntas">Preguntas</a>
-    <a class="btn" href="#disena">Diseña el tuyo</a>
+    <a class="btn" href="#disena" data-open-studio>Diseña el tuyo</a>
   </nav>
 </div></header>
 
@@ -223,7 +308,7 @@ footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;j
       <h1><span class="l1">Cada flor,</span><span class="paint">pintada</span><span class="l3">a mano.</span></h1>
       <p class="lead">Un cerezo lleva cientos de flores. Las pintamos una a una para que, al encenderlo, brille como un cerezo en plena noche.</p>
       <div class="ctas">
-        <a class="btn" href="#disena">Diseña tu cerezo</a>
+        <a class="btn" href="#disena" data-open-studio>Diseña tu cerezo</a>
         <a class="btn ghost" href="#detalle">Mira una flor de cerca</a>
       </div>
       <p class="scrollhint"><i></i>Baja despacio</p>
@@ -258,31 +343,13 @@ footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;j
     </div></div>
   </section>
 
-  <section class="chap tall" id="disena" data-stop="disena">
-    <div class="in"><div class="col" style="max-width:600px">
+  <section class="chap" id="disena" data-stop="disena">
+    <div class="in"><div class="col">
       <p class="eyebrow">Diseña el tuyo</p>
       <h2>Elige altura y color. <em>Lo verás pintarse.</em></h2>
-      <div id="order-slot" class="glass">
-        <form id="order-form" novalidate>
-          <fieldset><legend>Altura</legend><div class="choices" id="size-choices"></div></fieldset>
-          <fieldset><legend>Color de las flores</legend><div class="choices" id="color-choices"></div></fieldset>
-          <div class="total"><span class="hand" id="sum-flowers"></span><span class="p" id="sum-price"></span></div>
-          <div class="row">
-            <div class="field"><label class="l" for="f-nombre">Nombre</label><input type="text" id="f-nombre" name="nombre" autocomplete="name" required></div>
-            <div class="field"><label class="l" for="f-ciudad">Ciudad</label><input type="text" id="f-ciudad" name="ciudad" autocomplete="address-level2"></div>
-          </div>
-          <div class="row">
-            <div class="field"><label class="l" for="f-email">Email</label><input type="email" id="f-email" name="email" autocomplete="email"></div>
-            <div class="field"><label class="l" for="f-tel">Teléfono</label><input type="tel" id="f-tel" name="telefono" autocomplete="tel"></div>
-          </div>
-          <div class="field"><label class="l" for="f-msg">¿Algo especial? (opcional)</label><textarea id="f-msg" name="mensaje" placeholder="Es un regalo, lo necesito para una fecha, otro color…"></textarea></div>
-          <p class="err" id="f-err" role="alert"></p>
-          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
-            <button class="btn" type="submit" id="f-send">Enviar encargo</button>
-            <span class="fine" id="pay-note">No pagas nada hasta que te confirmemos precio y fecha.</span>
-          </div>
-        </form>
-      </div>
+      <p class="sub">Abre el probador: gira el árbol con el dedo, cambia el color de sus flores y míralo de cerca antes de encargarlo.</p>
+      <ul class="price-list" id="price-list"></ul>
+      <div class="ctas"><button class="btn" type="button" data-open-studio>Abrir el probador</button></div>
     </div></div>
   </section>
 
@@ -299,6 +366,59 @@ footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;j
     </div></div>
   </section>
 </main>
+
+
+<div id="studio" class="studio" hidden role="dialog" aria-modal="true" aria-labelledby="st-title">
+  <div class="st-tools" role="group" aria-label="Vista">
+    <button type="button" class="chip on" data-view="tree" aria-pressed="true">Árbol entero</button>
+    <button type="button" class="chip" data-view="flor" aria-pressed="false">Ver una flor</button>
+    <button type="button" class="chip" id="st-light" aria-pressed="true"><i class="dot"></i><span>Encendido</span></button>
+  </div>
+  <div class="st-ruler" id="st-ruler" aria-hidden="true"><b id="st-ruler-l">150 cm</b></div>
+  <p class="st-hint hand" id="st-hint" aria-hidden="true">arrastra para girarlo</p>
+
+  <aside class="st-panel" id="studio-panel">
+    <div class="st-grab" aria-hidden="true"></div>
+    <header class="st-head">
+      <div>
+        <p class="eyebrow" id="st-step-label">Paso 1 de 2 · Tu cerezo</p>
+        <h2 id="st-title">Diseña tu cerezo</h2>
+      </div>
+      <button type="button" class="st-x" id="st-close" aria-label="Cerrar el probador">✕</button>
+    </header>
+    <div id="order-slot">
+      <form id="order-form" novalidate>
+        <div class="st-step" data-step="1">
+          <fieldset><legend>Altura</legend><div class="sizes-seg" id="size-choices"></div></fieldset>
+          <fieldset><legend>Color de las flores <span id="color-name" class="hand"></span></legend><div class="swatches" id="color-choices"></div></fieldset>
+          <p class="st-paint"><span class="hand" id="st-count">pintando flor 0</span><i class="bar-p"><i id="st-prog"></i></i></p>
+          <div class="st-foot">
+            <div class="st-price"><span class="p" id="sum-price"></span><span class="fine" id="sum-flowers"></span></div>
+            <button type="button" class="btn" id="st-next">Continuar</button>
+          </div>
+        </div>
+        <div class="st-step" data-step="2" hidden>
+          <button type="button" class="st-back" id="st-back">← Cambiar altura o color</button>
+          <p class="st-summary" id="st-summary"></p>
+          <div class="row">
+            <div class="field"><label class="l" for="f-nombre">Nombre</label><input type="text" id="f-nombre" name="nombre" autocomplete="name" required></div>
+            <div class="field"><label class="l" for="f-ciudad">Ciudad</label><input type="text" id="f-ciudad" name="ciudad" autocomplete="address-level2"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label class="l" for="f-email">Email</label><input type="email" id="f-email" name="email" autocomplete="email"></div>
+            <div class="field"><label class="l" for="f-tel">Teléfono</label><input type="tel" id="f-tel" name="telefono" autocomplete="tel"></div>
+          </div>
+          <div class="field"><label class="l" for="f-msg">¿Algo especial? (opcional)</label><textarea id="f-msg" name="mensaje" placeholder="Es un regalo, lo necesito para una fecha, otro color…"></textarea></div>
+          <p class="err" id="f-err" role="alert"></p>
+          <div class="st-foot">
+            <span class="fine" id="pay-note">No pagas nada hasta que te confirmemos precio y fecha.</span>
+            <button class="btn" type="submit" id="f-send">Enviar encargo</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </aside>
+</div>
 
 <section id="taller" class="inbox" hidden>
   <div class="in">
@@ -357,10 +477,12 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",
 const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ===== Configurador ===== */
-document.getElementById("size-choices").innerHTML = SIZES.map(s=>`
-  <label class="choice"><input type="radio" name="size" id="s-${s.id}" value="${s.id}" ${s.star?"checked":""}><span><b>${s.name}</b><small>${s.height} · ${eur(s.price)}</small></span></label>`).join("");
+const miniTree = (h)=>{ const H=26+h*16; return `<svg width="34" height="${H}" viewBox="0 0 34 ${H}" aria-hidden="true"><path d="M17 ${H} V${H*.42} M17 ${H*.6} L8 ${H*.36} M17 ${H*.52} L26 ${H*.3} M17 ${H*.42} L13 ${H*.12} M17 ${H*.42} L22 ${H*.08}" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/>${[[8,.36],[26,.3],[13,.12],[22,.08],[17,.2],[11,.24],[24,.18]].map(([x,y])=>`<circle cx="${x}" cy="${H*y}" r="2.3" fill="var(--glow)"/>`).join("")}</svg>`; };
+document.getElementById("size-choices").innerHTML = SIZES.map((s,i)=>`
+  <label class="sz"><input type="radio" name="size" id="s-${s.id}" value="${s.id}" ${s.star?"checked":""}><span>${miniTree(i)}<b>${s.height}</b><small>${eur(s.price)}</small></span></label>`).join("");
 document.getElementById("color-choices").innerHTML = COLORS.map((c,i)=>`
-  <label class="choice"><input type="radio" name="color" id="c-${c.id}" value="${c.id}" ${i===0?"checked":""}><span><b><i class="sw" style="color:${c.css};background:${c.css}"></i>${c.name}</b><small>${c.note}</small></span></label>`).join("");
+  <label class="sw-o"><input type="radio" name="color" id="c-${c.id}" value="${c.id}" ${i===0?"checked":""} aria-label="${c.name}"><i style="background:radial-gradient(circle at 50% 50%, #fff 0 12%, ${c.css} 30%, color-mix(in srgb, ${c.css} 60%, #2a0b2a) 100%)"></i><small>${c.name}</small></label>`).join("");
+document.getElementById("price-list").innerHTML = SIZES.map(s=>`<li><span><b>${s.name}</b> · ${s.height} · ≈ ${s.flowers} flores</span><span class="pr">${eur(s.price)}</span></li>`).join("");
 
 function current(){
   const f = document.getElementById("order-form");
@@ -369,10 +491,13 @@ function current(){
   return { f, size, color };
 }
 function updateSum(){
-  const { size } = current();
-  document.getElementById("sum-flowers").textContent = `≈ ${size.flowers} flores pintadas a mano`;
+  const { size, color } = current();
+  document.getElementById("sum-flowers").textContent = `${size.name} · ≈ ${size.flowers} flores`;
   document.getElementById("sum-price").textContent = eur(size.price);
   document.getElementById("total").textContent = size.flowers;
+  document.getElementById("color-name").textContent = color.name.toLowerCase();
+  document.getElementById("st-ruler-l").textContent = size.height;
+  document.getElementById("st-summary").innerHTML = `Cerezo <b>${size.name.toLowerCase()} de ${size.height}</b> con flores <b>${color.name.toLowerCase()}</b> · <b>${eur(size.price)}</b>`;
 }
 updateSum();
 if(PAY_ONLINE){ document.getElementById("f-send").textContent = "Encargar y pagar"; document.getElementById("pay-note").textContent = "Pago seguro con tarjeta a través de Stripe."; }
@@ -381,6 +506,45 @@ document.getElementById("order-form").addEventListener("change", e=>{
   const { size, color } = current();
   if(e.target.name==="size") window.tree?.setSize(size);
   if(e.target.name==="color") window.tree?.setColor(color);
+});
+
+/* ===== Probador: abrir, pasos, vistas ===== */
+const studioEl = document.getElementById("studio");
+function setStep(n){
+  studioEl.querySelectorAll(".st-step").forEach(el=>el.hidden = (+el.dataset.step!==n));
+  studioEl.classList.toggle("step2", n===2);
+  document.getElementById("st-step-label").textContent = n===1 ? "Paso 1 de 2 · Tu cerezo" : "Paso 2 de 2 · Tus datos";
+  document.getElementById("st-title").textContent = n===1 ? "Diseña tu cerezo" : "¿A quién se lo enviamos?";
+  document.getElementById("order-slot").scrollTop = 0;
+  if(n===2) setTimeout(()=>document.getElementById("f-nombre").focus({preventScroll:true}), 350);
+}
+function setView(v){
+  studioEl.querySelectorAll("[data-view]").forEach(b=>{ const on=b.dataset.view===v; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); });
+  window.tree?.studioView(v);
+}
+let lastFocus=null;
+function openStudio(){
+  lastFocus=document.activeElement;
+  studioEl.hidden=false; document.body.classList.add("in-studio");
+  setStep(1); setView("tree");
+  window.tree?.studio(true);
+  setTimeout(()=>document.getElementById("st-close").focus({preventScroll:true}), 60);
+}
+function closeStudio(){
+  studioEl.hidden=true; document.body.classList.remove("in-studio","done-step");
+  window.tree?.studio(false);
+  lastFocus?.focus?.({preventScroll:true});
+}
+document.querySelectorAll("[data-open-studio]").forEach(b=>b.addEventListener("click",e=>{ e.preventDefault(); openStudio(); }));
+document.getElementById("st-close").addEventListener("click", closeStudio);
+addEventListener("keydown", e=>{ if(e.key==="Escape" && !studioEl.hidden) closeStudio(); });
+document.getElementById("st-next").addEventListener("click", ()=>setStep(2));
+document.getElementById("st-back").addEventListener("click", ()=>setStep(1));
+studioEl.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click", ()=>setView(b.dataset.view)));
+document.getElementById("st-light").addEventListener("click", e=>{
+  const b=e.currentTarget, on=b.getAttribute("aria-pressed")!=="true";
+  b.setAttribute("aria-pressed", on); b.querySelector("span").textContent = on? "Encendido" : "Apagado";
+  window.tree?.lights(on);
 });
 
 /* ===== El cerezo 3D ===== */
@@ -747,14 +911,20 @@ document.getElementById("order-form").addEventListener("change", e=>{
     if(done>=N) painting=false;
     document.getElementById("count").textContent = done;
     document.getElementById("prog").style.width = (paintedFrac*100).toFixed(1)+"%";
+    document.getElementById("st-count").textContent = done>=N ? `${N} flores pintadas` : `pintando flor ${done} de ${N}`;
+    document.getElementById("st-prog").style.width = (paintedFrac*100).toFixed(1)+"%";
   }
   function tintScene(c){ recolorStamens(c); const at=atlasFor(c); petalMat.map = at; petalMat.needsUpdate=true; haloMat.color.setHex(c.halo); poolMat.color.setHex(c.halo); petalsFall.material.color.setHex(c.halo); crownLight.color.setHex(c.light); }
 
   window.tree = {
     setSize(s){ buildTree(s); applyColors(); startPaint(REDUCE?0:3.2, .1); },
     setColor(c){ cur=c; tintScene(c); startPaint(REDUCE?0:2.6); },
-    repaint(){ startPaint(REDUCE?0:6); }
+    repaint(){ startPaint(REDUCE?0:6); },
+    studio(on){ STU.on=on; STU.view="tree"; first=true; if(on){ STU.hintShown=false; } },
+    studioView(v){ STU.view=v; },
+    lights(on){ STU.lightsOn=on; }
   };
+  const STU = { on:false, view:"tree", lightsOn:true, drag:false, lx:0, hintShown:false, lw:0 };
   document.getElementById("repaint").addEventListener("click", ()=>window.tree.repaint());
 
   const initSize = SIZES.find(s=>s.star)||SIZES[1];
@@ -791,7 +961,29 @@ document.getElementById("order-form").addEventListener("change", e=>{
     outPos.set(Math.sin(st.theta)*Math.cos(st.phi), Math.sin(st.phi), Math.cos(st.theta)*Math.cos(st.phi)).multiplyScalar(d).add(outTgt);
   }
   const pA=new THREE.Vector3(), tA=new THREE.Vector3(), pB=new THREE.Vector3(), tB=new THREE.Vector3();
+  const tanH = deg=>Math.tan(THREE.MathUtils.degToRad(deg)/2);
+  function studioDesired(){
+    const panel=document.getElementById("studio-panel").getBoundingClientRect();
+    let offX=0, offY=0, fx=1, fy=1;
+    if(narrow){
+      const top=110, bottom=Hh-panel.height; const c=(top+bottom)/2;
+      offY = -(c - Hh/2); fy = Math.max(.2,(bottom-top-30)/Hh); fx=.86;
+    } else {
+      const pw = W - panel.left + 10; offX = pw/2; offY = -30; fx=(W-pw-120)/W; fy=(Hh-160)/Hh;
+    }
+    if(STU.view==="flor"){
+      stopPose(STOPS.detalle,pA,tA);
+      return {pos:pA, tgt:tA, shift:0, fw:1, offX, offY};
+    }
+    tA.set(0,H*.5,0);
+    const t=tanH(camera.fov);
+    const dist=Math.max((H*1.12)/(2*t*fy), (H*.85)/(2*t*camera.aspect*fx));
+    const th=.15, ph=.06;
+    pA.set(Math.sin(th)*Math.cos(ph), Math.sin(ph), Math.cos(th)*Math.cos(ph)).multiplyScalar(dist).add(tA);
+    return {pos:pA, tgt:tA, shift:0, fw:0, offX, offY};
+  }
   function desired(){
+    if(STU.on) return studioDesired();
     const vc = innerHeight*0.5;
     const cs = sections.map(s=>{ const r=s.getBoundingClientRect(); return r.top + Math.min(r.height, innerHeight)*0.5; });
     let i=0; while(i<cs.length-1 && cs[i+1] < vc) i++;
@@ -810,7 +1002,8 @@ document.getElementById("order-form").addEventListener("change", e=>{
       pA.copy(tgt).addScaledVector(dir,dist); tA.copy(tgt);
     } else { pA.lerp(pB,t); tA.lerp(tB,t); }
     const shift = narrow? 0 : a.shift + (b.shift-a.shift)*t;
-    return {pos:pA, tgt:tA, shift, fw: fwA+(fwB-fwA)*t};
+    const fwv=fwA+(fwB-fwA)*t;
+    return {pos:pA, tgt:tA, shift, fw: fwv, offX:-shift*W, offY:(narrow? 0.2*Hh*(1-fwv) : 0)};
   }
 
   function resize(){
@@ -820,6 +1013,14 @@ document.getElementById("order-form").addEventListener("change", e=>{
     camera.aspect=W/Hh; camera.fov = narrow? 42 : 34; camera.updateProjectionMatrix();
   }
   addEventListener("resize", resize); resize();
+  canvas.addEventListener("pointerdown", e=>{ if(!STU.on) return; STU.drag=true; STU.lx=e.clientX; canvas.classList.add("drag"); canvas.setPointerCapture?.(e.pointerId); });
+  canvas.addEventListener("pointermove", e=>{ if(!STU.drag) return; const dx=e.clientX-STU.lx; STU.lx=e.clientX; rotY += dx*0.008; if(Math.abs(dx)>2){ STU.hintShown=true; } });
+  const endDrag=()=>{ STU.drag=false; canvas.classList.remove("drag"); };
+  canvas.addEventListener("pointerup", endDrag); canvas.addEventListener("pointercancel", endDrag);
+  const rulerEl=document.getElementById("st-ruler"), hintEl=document.getElementById("st-hint");
+  const pv=new THREE.Vector3();
+  const toScreen=(v)=>{ pv.copy(v).project(camera); return { x:(pv.x*.5+.5)*W, y:(-pv.y*.5+.5)*Hh }; };
+  let camOffX=0, camOffY=0;
 
   let last=performance.now()/1000, first=true;
   const camDist={v:3};
@@ -828,38 +1029,55 @@ document.getElementById("order-form").addEventListener("change", e=>{
     if(painting) applyColors();
     const d = desired();
     focusW += (d.fw-focusW)*Math.min(1,dt*4);
-    if(!REDUCE) rotY += dt*0.07*Math.pow(1-focusW,3);
+    if(!REDUCE && !STU.drag) rotY += dt*(STU.on? 0.035 : 0.07)*Math.pow(1-focusW,3);
+    STU.lw += ((STU.on && !STU.lightsOn ? 1 : 0) - STU.lw)*Math.min(1,dt*3);
+    const lw = STU.lw;
     root.rotation.y = rotY;
     const kk = first||REDUCE? 1 : 1-Math.exp(-dt*3.2); first=false;
     const px = d.pos.clone();
-    if(!REDUCE){ const par=(1-focusW)*0.18 + focusW*0.006; px.x += mouse.x*par; px.y -= mouse.y*par*.7; }
+    if(!REDUCE && !STU.on){ const par=(1-focusW)*0.18 + focusW*0.006; px.x += mouse.x*par; px.y -= mouse.y*par*.7; }
     // en primer plano la cámara se mueve en escala logarítmica para no atravesar ramas
-    camPos.lerp(px,kk); camTgt.lerp(d.tgt,kk); camShift += (d.shift-camShift)*kk;
+    camPos.lerp(px,kk); camTgt.lerp(d.tgt,kk); camOffX += (d.offX-camOffX)*kk; camOffY += (d.offY-camOffY)*kk;
     camera.position.copy(camPos); camera.lookAt(camTgt);
-    camera.setViewOffset(W,Hh,-camShift*W,(narrow? 0.2*Hh*(1-focusW) : 0),W,Hh);
+    camera.setViewOffset(W,Hh,camOffX,camOffY,W,Hh);
+    camera.updateMatrixWorld();
+    // regla de altura y pista de "arrastra" junto al árbol
+    if(STU.on){
+      const base=toScreen(new THREE.Vector3(0,0,0)), top=toScreen(new THREE.Vector3(0,H,0));
+      const right=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0).normalize();
+      const side=toScreen(new THREE.Vector3(0,H*.55,0).addScaledVector(right,H*.46));
+      const showR = STU.view==="tree" && focusW<.1;
+      rulerEl.style.opacity = showR? 1 : 0;
+      rulerEl.style.transform = `translate(${Math.round(Math.min(side.x+(narrow?6:24), W-(narrow?78:0) - (narrow?0:0)))}px,${Math.round(top.y)}px)`;
+      rulerEl.style.height = Math.max(10,Math.round(base.y-top.y))+"px";
+      hintEl.style.opacity = (showR && !STU.hintShown)? .85 : 0;
+      hintEl.style.left = Math.round(base.x)+"px"; hintEl.style.top = Math.round(base.y+14)+"px";
+    }
     camDist.v = camPos.distanceTo(camTgt);
 
     const back = new THREE.Vector3(0,H*.6,0).sub(camPos).setY(0).normalize();
     halo.position.set(back.x*0.9, H*.6, back.z*0.9);
     const glow = 0.12 + paintedFrac*0.62;
-    haloMat.opacity = glow*(1-focusW*.7); poolMat.opacity = glow*.55;
-    crownLight.intensity = 0.6 + paintedFrac*2.2;
+    haloMat.opacity = glow*(1-focusW*.7)*(1-lw*.92); poolMat.opacity = glow*.55*(1-lw*.85);
+    crownLight.intensity = (0.6 + paintedFrac*2.2)*(1-lw*.8);
+    amb.intensity = .55 + lw*1.1;
+    renderer.setClearColor(new THREE.Color(BG).lerp(new THREE.Color(0x2b2433), lw), 1); scene.fog.color.setHex(BG).lerp(new THREE.Color(0x2b2433), lw);
     // primer plano: luz suave de estudio para ver el papel de las ramas y las pinceladas
     studio.position.copy(camPos).add(new THREE.Vector3(0,.05,0)); studio.intensity = 0.25 + focusW*0.4; studio.distance = 0.6 + (1-focusW)*3;
     { const fwd=camTgt.clone().sub(camPos).normalize(), right=new THREE.Vector3().crossVectors(fwd,Y).normalize();
-      key.position.copy(camTgt).addScaledVector(right,-.6).addScaledVector(Y,.7).addScaledVector(fwd,-.5); key.target.position.copy(camTgt); key.intensity = focusW*1.25;
+      key.position.copy(camTgt).addScaledVector(right,-.6).addScaledVector(Y,.7).addScaledVector(fwd,-.5); key.target.position.copy(camTgt); key.intensity = Math.max(focusW*1.25, lw*1.2);
       kick.position.copy(camTgt).addScaledVector(right,.7).addScaledVector(Y,.25).addScaledVector(fwd,.6); kick.target.position.copy(camTgt); kick.intensity = focusW*0.7; }
-    glowU.value = 1 - focusW*0.12; stGlowU.value = .6 - focusW*.45;
+    glowU.value = (1 - focusW*0.12)*(1-lw*.25); stGlowU.value = (.6 - focusW*.45)*(1-lw*.8);
 
-    bloom.strength = 1.1 - focusW*0.85; bloom.threshold = 0.3 + focusW*0.6;
-    const ck = 1 - focusW*0.6; if(Math.abs(ck-coreK)>0.02){ coreK=ck; applyColors(); } bloom.radius = 0.6 - focusW*0.3;
+    bloom.strength = (1.1 - focusW*0.85)*(1-lw*.85); bloom.threshold = 0.3 + focusW*0.6 + lw*.3;
+    const ck = (1 - focusW*0.6)*(1-lw*.75); if(Math.abs(ck-coreK)>0.02){ coreK=ck; applyColors(); } bloom.radius = 0.6 - focusW*0.3;
     scene.fog.density = 0.11*(1-focusW);
     if(bokeh){ bokeh.enabled = focusW>0.03 && !narrow; if(bokeh.enabled){ const u=bokeh.uniforms; u.focus.value=camDist.v; u.aperture.value=0.1*focusW; u.maxblur.value=0.011; } }
     if(!REDUCE){
       for(let i=0;i<NP;i++){ pPos[i*3+1]-=pVel[i*2]*dt; pVel[i*2+1]+=dt*.8; pPos[i*3]+=Math.sin(pVel[i*2+1])*dt*.05; pPos[i*3+2]+=Math.cos(pVel[i*2+1]*.7)*dt*.04; if(pPos[i*3+1]<0.01) seedPetal(i,true); }
       petalsFall.geometry.attributes.position.needsUpdate=true;
     }
-    petalsFall.material.opacity = paintedFrac*0.85*(1-focusW);
+    petalsFall.material.opacity = paintedFrac*0.85*(1-focusW)*(1-lw);
     composer.render();
     requestAnimationFrame(frame);
   }
@@ -920,6 +1138,7 @@ function showDone(o, saved, size){
       <div style="display:flex;gap:10px;flex-wrap:wrap">${o.payUrl ? `<a class="btn" href="${esc(o.payUrl)}" target="_blank" rel="noopener">Pagar ${eur(o.precio)} con tarjeta</a>` : ""}<button class="btn ${o.payUrl?"ghost":""}" type="button" id="copy">Copiar encargo</button><button class="btn ghost" type="button" id="again">Volver</button></div>
     </div>`;
   document.getElementById("again").onclick = () => location.reload();
+  studioEl.classList.add("done-step"); document.getElementById("st-step-label").textContent = "Encargo"; document.getElementById("st-title").textContent = o.payUrl ? "Último paso: el pago" : "¡Gracias!";
   const c = document.getElementById("copy");
   if(c) c.onclick = async () => {
     try{ await navigator.clipboard.writeText(txt); c.textContent = "Copiado"; }
