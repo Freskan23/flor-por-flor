@@ -200,7 +200,19 @@ body.in-studio .bar nav{opacity:0;pointer-events:none}
 body.in-studio #stage.drag{cursor:grabbing}
 .studio{position:fixed;inset:0;z-index:15;pointer-events:none}
 .studio > *{pointer-events:auto}
-.st-tools{position:fixed;left:max(24px, env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-wrap:wrap;gap:8px}
+.st-tools{position:fixed;left:max(24px, env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-wrap:wrap;gap:8px;max-width:calc(100vw - var(--pw) - 72px)}
+@media (max-width:1180px){ .switch span{display:none} .switch{padding:.45em .55em} }
+@media (max-height:520px) and (min-aspect-ratio:1/1){
+  .st-panel{top:calc(env(safe-area-inset-top,0px) + 10px);bottom:10px;max-height:none;--pw:clamp(300px, 46vw, 420px)}
+  .studio{--pw:clamp(300px, 46vw, 420px)}
+  .st-tools{top:calc(env(safe-area-inset-top,0px) + 12px);left:max(14px, env(safe-area-inset-left,0px))}
+  .chip{font-size:.78rem;padding:.4em .8em}
+  .st-head{padding:12px 18px 0}.st-head h2{font-size:1.3rem}
+  .studio form{padding:6px 18px 14px}.st-step{gap:12px}
+  .sz svg{display:none}.st-paint{display:none}
+  .sw-o i{width:42px;height:42px}
+  body.in-studio .bar{opacity:0;pointer-events:none}
+}
 .chip{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:.86rem;font-weight:500;color:var(--ink);background:color-mix(in srgb,var(--night) 55%,transparent);border:1px solid color-mix(in srgb,var(--petal) 22%,transparent);border-radius:999px;padding:.5em 1em;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .2s,background .2s}
 .chip:hover{border-color:var(--petal)}
 .chip.on,.chip[aria-pressed="true"]{background:color-mix(in srgb,var(--petal) 92%,transparent);color:#2b0b28;border-color:var(--petal)}
@@ -219,7 +231,8 @@ body.in-studio #stage.drag{cursor:grabbing}
 .st-ruler::before{top:0}.st-ruler::after{bottom:0}
 .st-ruler b{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-family:var(--f-hand);font-weight:700;font-size:1.5rem;color:var(--petal);white-space:nowrap;text-shadow:0 1px 12px var(--night)}
 .st-hint{position:fixed;left:0;top:0;font-size:1.35rem;opacity:.85;pointer-events:none;white-space:nowrap;transition:opacity .6s;transform:translateX(-50%)}
-.st-panel{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);right:max(20px, env(safe-area-inset-right,0px));bottom:20px;width:400px;display:flex;flex-direction:column;background:color-mix(in srgb,var(--night-2) 78%,transparent);border:1px solid color-mix(in srgb,var(--petal) 16%,transparent);border-radius:24px;backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);box-shadow:0 30px 100px -30px rgba(0,0,0,.6);overflow:hidden;animation:panelIn .55s cubic-bezier(.2,.8,.2,1) both}
+.studio{--pw:clamp(300px, 34vw, 410px)}
+.st-panel{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);right:max(20px, env(safe-area-inset-right,0px));bottom:20px;width:var(--pw);max-height:calc(100vh - 96px);display:flex;flex-direction:column;background:color-mix(in srgb,var(--night-2) 78%,transparent);border:1px solid color-mix(in srgb,var(--petal) 16%,transparent);border-radius:24px;backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);box-shadow:0 30px 100px -30px rgba(0,0,0,.6);overflow:hidden;animation:panelIn .55s cubic-bezier(.2,.8,.2,1) both}
 @keyframes panelIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
 .st-grab{display:none}
 .st-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:22px 24px 6px}
@@ -252,14 +265,17 @@ legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:
 .st-paint .bar-p{flex:1;height:2px;background:color-mix(in srgb,var(--petal) 20%,transparent);border-radius:2px;overflow:hidden;display:block}
 .st-paint .bar-p i{display:block;height:100%;width:0;background:var(--glow);box-shadow:0 0 12px var(--glow)}
 .st-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.st-foot{position:sticky;bottom:0;z-index:2;margin:0 -24px -22px;padding:16px 24px 22px;background:linear-gradient(to top, color-mix(in srgb,var(--night-2) 96%,transparent) 70%, transparent)}
+@media (max-width:900px) and (min-height:521px), (max-aspect-ratio:1/1){ .st-foot{margin:0 -18px -16px;padding:14px 18px 16px} }
+@media (max-height:520px) and (min-aspect-ratio:1/1){ .st-foot{margin:0 -18px -14px;padding:12px 18px 14px} }
 .st-price{display:grid}
 .st-price .p{font-family:var(--f-display);font-size:2rem;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}
 .st-back{justify-self:start;background:none;border:0;color:var(--petal);font:inherit;font-size:.9rem;cursor:pointer;padding:0}
 .st-summary{color:var(--muted);margin:0}
 .st-summary b{color:var(--ink);font-weight:500}
 .studio .done{padding:22px 24px}
-@media (max-width:820px){
-  .st-tools{left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 66px);flex-wrap:nowrap}
+@media (max-width:900px) and (min-height:521px), (max-aspect-ratio:1/1){
+  .st-tools{left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 66px);flex-wrap:nowrap;max-width:calc(100vw - 24px)}
   .chip{font-size:.8rem;padding:.45em .85em}
   .st-panel{left:0;right:0;bottom:0;top:auto;width:auto;max-height:46vh;border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);animation:sheetIn .55s cubic-bezier(.2,.8,.2,1) both;transition:max-height .45s cubic-bezier(.2,.8,.2,1)}
   .studio.step2 .st-panel, .studio.done-step .st-panel{max-height:86vh}
@@ -970,7 +986,7 @@ document.getElementById("st-light").addEventListener("click", e=>{
     preguntas: { theta:.7, phi:.42, dist:4.5, ty:.4, shift:.22 },
   };
   const sections = [...document.querySelectorAll("[data-stop]")];
-  let W=1,Hh=1, narrow=false;
+  let W=1,Hh=1, narrow=false, sheet=false;
   const camPos=new THREE.Vector3(0,1,4), camTgt=new THREE.Vector3(0,.8,0); let camShift=.25, rotY=0, focusW=0;
   const mouse={x:0,y:0}; addEventListener("pointermove",e=>{ mouse.x=e.clientX/innerWidth-.5; mouse.y=e.clientY/innerHeight-.5; },{passive:true});
   const Y=new THREE.Vector3(0,1,0);
@@ -995,12 +1011,16 @@ document.getElementById("st-light").addEventListener("click", e=>{
   const tanH = deg=>Math.tan(THREE.MathUtils.degToRad(deg)/2);
   function studioDesired(){
     const panel=document.getElementById("studio-panel").getBoundingClientRect();
+    const tools=document.querySelector(".st-tools").getBoundingClientRect();
     let offX=0, offY=0, fx=1, fy=1;
-    if(narrow){
-      const top=110, bottom=Hh-panel.height; const c=(top+bottom)/2;
-      offY = -(c - Hh/2); fy = Math.max(.2,(bottom-top-30)/Hh); fx=.86;
+    const top = tools.bottom + 12;
+    if(sheet){
+      const bottom = panel.top - 34; const c=(top+bottom)/2;
+      offY = -(c - Hh/2); fy = Math.max(.15,(bottom-top)/Hh); fx=.8;
     } else {
-      const pw = W - panel.left + 10; offX = pw/2; offY = -30; fx=(W-pw-120)/W; fy=(Hh-160)/Hh;
+      const left = 20, right = panel.left - 20, bottom = Hh - 40;
+      offX = W/2 - (left+right)/2; offY = -((top+bottom)/2 - Hh/2);
+      fx = Math.max(.15,(right-left-140)/W); fy = Math.max(.15,(bottom-top)/Hh);
     }
     if(STU.view==="flor"){
       stopPose(STOPS.detalle,pA,tA);
@@ -1038,7 +1058,7 @@ document.getElementById("st-light").addEventListener("click", e=>{
   }
 
   function resize(){
-    W=innerWidth; Hh=innerHeight; narrow = W<820;
+    W=innerWidth; Hh=innerHeight; narrow = W<820; sheet = (W<=900 && Hh>520) || W/Hh<=1;
     renderer.setSize(W,Hh,false); composer.setSize(W,Hh);
     bloom.resolution.set(W/2,Hh/2);
     camera.aspect=W/Hh; camera.fov = narrow? 42 : 34; camera.updateProjectionMatrix();
@@ -1079,7 +1099,8 @@ document.getElementById("st-light").addEventListener("click", e=>{
       const side=toScreen(new THREE.Vector3(0,H*.55,0).addScaledVector(right,H*.46));
       const showR = STU.view==="tree" && focusW<.1;
       rulerEl.style.opacity = showR? 1 : 0;
-      rulerEl.style.transform = `translate(${Math.round(Math.min(side.x+(narrow?6:24), W-(narrow?18:0)))}px,${Math.round(top.y)}px)`;
+      const pr=document.getElementById("studio-panel").getBoundingClientRect(); const maxX = sheet ? W-18 : pr.left-80;
+      rulerEl.style.transform = `translate(${Math.round(Math.min(side.x+(sheet?6:24), maxX))}px,${Math.round(top.y)}px)`;
       rulerEl.style.height = Math.max(10,Math.round(base.y-top.y))+"px";
       hintEl.style.opacity = (showR && !STU.hintShown)? .85 : 0;
       hintEl.style.left = Math.round(base.x)+"px"; hintEl.style.top = Math.round(base.y+14)+"px";
