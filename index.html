@@ -202,6 +202,11 @@ body.in-studio #stage.drag{cursor:grabbing}
 .studio > *{pointer-events:auto}
 .st-tools{position:fixed;left:max(24px, env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-wrap:wrap;gap:8px;max-width:calc(100vw - var(--pw) - 72px)}
 @media (max-width:1180px){ .switch span{display:none} .switch{padding:.45em .55em} }
+@media (max-height:760px) and (min-aspect-ratio:1/1){
+  .st-head{padding-top:14px}.st-head h2{font-size:1.55rem}
+  .st-step{gap:14px}.sz-r{padding:8px 14px}.sz .h{font-size:1.4rem}
+  .st-paint{display:none}.sw-o i{width:46px;height:46px}.swatches{gap:14px}
+}
 @media (max-height:520px) and (min-aspect-ratio:1/1){
   .st-panel{top:calc(env(safe-area-inset-top,0px) + 10px);bottom:10px;max-height:none;--pw:clamp(300px, 46vw, 420px)}
   .studio{--pw:clamp(300px, 46vw, 420px)}
