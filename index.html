@@ -186,6 +186,28 @@ footer{position:relative;z-index:3;padding:36px var(--gr) 48px var(--gl);color:v
 footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:baseline}
 
 
+/* ===== galería "en casa" ===== */
+.casa{align-items:center}
+.casa::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--night) 82%,transparent) 14%,color-mix(in srgb,var(--night) 82%,transparent) 86%,transparent);pointer-events:none}
+.casa{position:relative}
+.casa .in{display:grid;gap:28px;grid-template-columns:minmax(0,1fr);min-width:0}
+.casa .in > *{min-width:0}
+.casa{overflow:hidden}
+.gx-wrap{position:relative;margin-right:calc(-1 * var(--gr))}
+.gx{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(240px,28vw,360px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--gr) 18px 0;scrollbar-width:none;overscroll-behavior-x:contain}
+.gx::-webkit-scrollbar{display:none}
+.gx figure{margin:0;position:relative;scroll-snap-align:start;border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--night-2);box-shadow:0 24px 60px -30px rgba(0,0,0,.8),0 0 0 1px color-mix(in srgb,var(--petal) 12%,transparent)}
+.gx img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.gx figure:hover img{transform:scale(1.05)}
+.gx figcaption{position:absolute;left:16px;bottom:12px;font-size:1.5rem;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.gx figure::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(transparent,rgba(12,6,19,.55));pointer-events:none}
+.gx figcaption{z-index:1}
+.gx-nav{display:flex;gap:10px;margin-top:4px}
+.gx-b{width:44px;height:44px;border-radius:50%;border:1px solid color-mix(in srgb,var(--petal) 30%,transparent);background:color-mix(in srgb,var(--night) 55%,transparent);color:var(--ink);font:inherit;font-size:1.1rem;cursor:pointer;transition:border-color .2s,background .2s}
+.gx-b:hover{border-color:var(--petal);background:color-mix(in srgb,var(--petal) 12%,var(--night))}
+.disclaimer{color:var(--muted);font-size:.8rem;max-width:60ch;margin:0;opacity:.85}
+@media (max-width:820px){ .casa.chap{padding-block:90px 60px;align-items:center} .gx{grid-auto-columns:76vw} .gx-nav{display:none} }
+
 /* ===== probador (configurador a pantalla completa) ===== */
 .price-list{list-style:none;margin:0;padding:0;display:grid;gap:0;max-width:420px}
 .price-list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid color-mix(in srgb,var(--petal) 18%,transparent)}
@@ -352,6 +374,7 @@ legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:
   <nav>
     <a href="#detalle">La flor</a>
     <a href="#proceso">Cómo lo hacemos</a>
+      <a href="#casa">En casa</a>
     <a href="#preguntas">Preguntas</a>
     <a class="btn" href="#disena" data-open-studio>Diseña el tuyo</a>
   </nav>
@@ -403,6 +426,31 @@ legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:
       </ol>
       <p class="quote hand">“si una flor no brilla como debe, se vuelve a pintar”</p>
     </div></div>
+  </section>
+
+  <section class="chap casa" id="casa" data-stop="casa">
+    <div class="in">
+      <div class="col" style="max-width:720px">
+        <p class="eyebrow">En casa</p>
+        <h2>Así queda <em>encendido en tu salón</em></h2>
+        <p class="sub">De día da color al rincón. De noche llena la pared de luz rosa.</p>
+      </div>
+      <div class="gx-wrap">
+        <div class="gx" id="gx" tabindex="0" aria-label="Galería de fotos del cerezo en casa">
+          <figure><img src="casa-salon.jpg" alt="Cerezo de luz encendido en un salón luminoso junto al sofá" loading="lazy" width="900" height="1125"><figcaption class="hand">en el salón</figcaption></figure>
+          <figure><img src="flor-de-cerca.jpg" alt="Primer plano de las flores pintadas a mano, con estambres fucsia y portalámparas transparente" loading="lazy" width="900" height="1125"><figcaption class="hand">pintada a mano, de cerca</figcaption></figure>
+          <figure><img src="casa-dormitorio.jpg" alt="Cerezo encendido de noche en un dormitorio" loading="lazy" width="900" height="1125"><figcaption class="hand">como luz de noche</figcaption></figure>
+          <figure><img src="casa-recibidor.jpg" alt="Cerezo de luz en un recibidor junto a una consola de madera" loading="lazy" width="900" height="1125"><figcaption class="hand">en el recibidor</figcaption></figure>
+          <figure><img src="estudio.jpg" alt="Cerezo de luz completo sobre fondo claro" loading="lazy" width="900" height="1125"><figcaption class="hand">el cerezo entero</figcaption></figure>
+          <figure><img src="casa-comedor.jpg" alt="Cerezo de luz junto a la mesa del comedor al atardecer" loading="lazy" width="900" height="1125"><figcaption class="hand">al atardecer</figcaption></figure>
+        </div>
+        <div class="gx-nav">
+          <button type="button" class="gx-b" id="gx-prev" aria-label="Foto anterior">←</button>
+          <button type="button" class="gx-b" id="gx-next" aria-label="Foto siguiente">→</button>
+        </div>
+      </div>
+      <p class="disclaimer">Imágenes orientativas. Cada cerezo se pinta a mano, así que el tuyo puede variar ligeramente en forma, tono y acabado respecto a las fotos.</p>
+    </div>
   </section>
 
   <section class="chap" id="disena" data-stop="disena">
@@ -668,6 +716,16 @@ const SFX = (()=>{
   };
 })();
 
+
+/* contador fuera de la galería */
+(()=>{ const c=document.getElementById("casa"), m=document.getElementById("meter"); if(!c||!m||!window.IntersectionObserver) return;
+  new IntersectionObserver(es=>es.forEach(e=>{ m.style.opacity = e.isIntersecting ? 0 : ""; m.style.pointerEvents = e.isIntersecting ? "none" : ""; }),{threshold:.15}).observe(c); })();
+/* galería */
+(()=>{ const g=document.getElementById("gx"); if(!g) return;
+  const step=()=>{ const f=g.querySelector("figure"); return f? f.getBoundingClientRect().width+16 : 300; };
+  document.getElementById("gx-prev").addEventListener("click",()=>g.scrollBy({left:-step(),behavior:"smooth"}));
+  document.getElementById("gx-next").addEventListener("click",()=>g.scrollBy({left:step(),behavior:"smooth"}));
+})();
 /* ===== Probador: abrir, pasos, vistas ===== */
 const studioEl = document.getElementById("studio");
 function setStep(n){
@@ -1118,6 +1176,7 @@ document.getElementById("st-light").addEventListener("click", e=>{
     hero:      { theta: .15, phi:.10, dist:3.25, ty:.55, shift:.25 },
     detalle:   { focus:true, dist:.072, shift:.2 },
     proceso:   { theta:1.25, phi:-.16, dist:2.35, ty:.66, shift:.25 },
+    casa:      { theta:-.9, phi:.3, dist:4.2, ty:.5, shift:0 },
     disena:    { theta:-.35, phi:.08, dist:3.45, ty:.52, shift:.27 },
     preguntas: { theta:.7, phi:.42, dist:4.5, ty:.4, shift:.22 },
   };
