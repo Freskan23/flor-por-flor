@@ -546,7 +546,7 @@ legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:
       <div class="cards4">
         <article><span class="ic hand">1</span><h3>Envío</h3><p id="t-envio"></p></article>
         <article><span class="ic hand">2</span><h3>Embalaje</h3><p>Va en caja reforzada, con las ramas recogidas y las flores protegidas una a una. Solo tienes que abrir las ramas y enchufarlo.</p></article>
-        <article><span class="ic hand">3</span><h3>3 años de garantía</h3><p>Si una luz falla por un defecto, lo reparamos o lo cambiamos. Es la garantía legal en España y la cumplimos sin rodeos.</p></article>
+        <article><span class="ic hand">3</span><h3>Flores de repuesto</h3><p>Si se te rompe o se pierde una flor, te mandamos otra pintada a mano a juego con las tuyas por <b id="t-repuesto">3 €</b> la unidad.</p></article>
         <article><span class="ic hand">4</span><h3>14 días para devolverlo</h3><p>Si al recibirlo no te convence, tienes 14 días naturales para devolverlo y te reembolsamos el importe. <a href="#legal-envios" data-legal="envios">Cómo funciona</a></p></article>
       </div>
       <div class="specs" id="specs-wrap">
@@ -584,6 +584,7 @@ legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:
         <details><summary>¿Sirve como regalo?</summary><p>Mucho. Marca «Es para regalo» al encargarlo y lo enviamos envuelto, con una nota escrita a mano y sin el precio dentro.</p></details>
         <details><summary>¿Cuánto cuesta el envío?</summary><p id="faq-envio"></p></details>
         <details><summary>¿Y si no me gusta al recibirlo?</summary><p>Tienes 14 días naturales desde que lo recibes para devolverlo. Te devolvemos el importe en cuanto nos llegue en buen estado.</p></details>
+        <details><summary>¿Y si se rompe o se pierde una flor?</summary><p id="faq-repuesto">Te mandamos una flor de repuesto pintada a mano, a juego con las tuyas, por 3 € la unidad. Escríbenos con una foto y te decimos cómo.</p></details>
         <details><summary>¿Se puede poner en el exterior?</summary><p>Está pensado para interior: salón, dormitorio, recibidor o un escaparate.</p></details>
         <details><summary>¿Cómo se paga?</summary><p>Con tarjeta, Apple Pay o Google Pay a través de Stripe, una plataforma de pago segura. Tus datos de pago nunca pasan por nuestra web.</p></details>
       </div>
@@ -733,6 +734,7 @@ const NEGOCIO = {
   quienes: "",          // un párrafo sobre vosotros (si se deja vacío se usa un texto genérico)
   firma: "",            // p. ej. «Ana y Edu»
   envio: { coste: "Incluido en el precio", plazo: "", zona: "España" },
+  repuesto: 3,          // precio de cada flor de repuesto pintada a mano (€)
   ficha: { uso: "Interior", luz: "LED de luz cálida en el centro de cada flor", alimentacion: "", consumo: "", cable: "", base: "", interruptor: "" },
   opiniones: [],        // { nombre: "Laura", ciudad: "Madrid", texto: "…" } — solo opiniones reales
 };
@@ -896,10 +898,12 @@ const SFX = (()=>{
   const igUrl = has(N.instagram) ? `https://instagram.com/${N.instagram.replace(/^@/,"")}` : "";
   const plazoTxt = has(N.envio.plazo) ? `Llega en ${esc(N.envio.plazo)} desde que lo pintamos.` : "Lo pintamos al recibir tu encargo y te escribimos con la fecha de envío.";
   // franja de confianza
-  const trust=["Pago seguro con Stripe", `Envío a ${N.envio.zona}${/inclu/i.test(N.envio.coste)?" incluido":""}`, "3 años de garantía", "14 días para devolverlo", "Pieza única pintada a mano"];
+  const trust=["Pago seguro con Stripe", `Envío a ${N.envio.zona}${/inclu/i.test(N.envio.coste)?" incluido":""}`, `Flores de repuesto a ${N.repuesto} €`, "14 días para devolverlo", "Pieza única pintada a mano"];
   document.querySelectorAll("[data-trust]").forEach(ul=>ul.innerHTML=trust.map(t=>`<li><svg width="14" height="14" viewBox="0 0 40 40" aria-hidden="true"><use href="#blossom"/></svg>${t}</li>`).join(""));
   // envío
   document.getElementById("t-envio").innerHTML = `${has(N.envio.coste)? esc(N.envio.coste)+". " : ""}${plazoTxt} Enviamos a ${esc(N.envio.zona)}.`;
+  document.getElementById("t-repuesto").textContent = N.repuesto+" €";
+  document.getElementById("faq-repuesto").textContent = `Te mandamos una flor de repuesto pintada a mano, a juego con las tuyas, por ${N.repuesto} € la unidad. Escríbenos con una foto y te decimos cómo.`;
   document.getElementById("faq-envio").innerHTML = `${has(N.envio.coste)? esc(N.envio.coste)+". " : ""}${plazoTxt}`;
   // ficha técnica
   const lab={uso:"Uso",luz:"Luz",alimentacion:"Alimentación",consumo:"Consumo",cable:"Cable",base:"Base",interruptor:"Encendido"};
@@ -944,13 +948,15 @@ const SFX = (()=>{
       <h3>Precio y pago</h3><p>Los precios se muestran en euros, con IVA incluido. ${has(N.envio.coste)&&/inclu/i.test(N.envio.coste)?"El envío está incluido. ":""}El pago se hace con tarjeta u otros métodos disponibles a través de Stripe en el momento de la compra.</p>
       <h3>Plazos</h3><p>Pintamos cada cerezo al recibir el encargo. ${has(N.envio.plazo)?"El plazo estimado es de "+esc(N.envio.plazo)+".":"Te comunicamos la fecha de envío por email después de la compra."} Si por algún motivo no pudiéramos cumplirlo, te avisaremos y podrás cancelar el pedido con reembolso completo.</p>
       <h3>Derecho de desistimiento</h3><p>Tienes 14 días naturales desde que recibes el pedido para desistir de la compra sin dar explicaciones. Escríbenos a ${v(N.email,"email")} indicando tu nombre, el pedido y que deseas desistir (puedes usar el modelo de formulario de abajo). Te devolveremos el importe pagado, incluido el envío estándar, en un máximo de 14 días desde que nos lo comuniques, aunque podemos esperar a recibir el producto. Los gastos de devolución corren de tu cuenta, salvo que el producto llegue defectuoso. El producto debe devolverse en buen estado y, si es posible, en su embalaje.</p>
-      <h3>Garantía</h3><p>Como consumidor tienes una garantía legal de 3 años por falta de conformidad. Si el cerezo tiene un defecto, lo repararemos o lo sustituiremos y, si no fuera posible, te devolveremos el importe.</p>
+      <h3>Garantía legal</h3><p>Se aplica la garantía legal de conformidad que establece la ley para las compras de consumidores. Cubre los defectos de origen que el producto ya tuviera al entregarse. No cubre golpes, roturas o caídas, el desgaste de la pintura por manipulación, ni un uso distinto del indicado (por ejemplo, en exterior).</p>
+      <h3>Flores de repuesto</h3><p>Si se rompe o se pierde alguna flor, podemos enviarte flores de repuesto pintadas a mano a juego con las tuyas por ${N.repuesto} € la unidad, más el envío si corresponde. Escríbenos a ${v(N.email,"email")} con una foto.</p>
       <h3>Modelo de formulario de desistimiento</h3><p class="model">A la atención de ${v(N.titular,"titular")}, ${v(N.direccion,"dirección")}, ${v(N.email,"email")}:<br>Por la presente le comunico que desisto de mi contrato de venta del siguiente bien: [producto], pedido el [fecha] y recibido el [fecha]. Nombre del consumidor: [nombre]. Domicilio: [dirección]. Fecha y firma (solo si se envía en papel).</p>
       <h3>Ley aplicable</h3><p>Estas condiciones se rigen por la ley española y la normativa de protección de los consumidores.</p>`],
     envios:["Envíos y devoluciones", `<h3>Envío</h3><p>${has(N.envio.coste)? esc(N.envio.coste)+". " : ""}${plazoTxt} Enviamos a ${esc(N.envio.zona)}, en caja reforzada y con las flores protegidas.</p>
       <h3>Al recibirlo</h3><p>Revisa la caja delante del transportista. Si ves daños, anótalo en el albarán y escríbenos con una foto; lo solucionamos.</p>
       <h3>Devoluciones</h3><p>Tienes 14 días naturales desde la entrega para devolverlo. Escríbenos a ${v(N.email,"email")} y te explicamos cómo enviarlo. Te reembolsamos el importe con el mismo método de pago.</p>
-      <h3>Garantía</h3><p>3 años de garantía legal. Si alguna luz falla por defecto, lo reparamos o lo cambiamos.</p>`]
+      <h3>Flores de repuesto</h3><p>Si se rompe o se pierde una flor, te enviamos otra pintada a mano por ${N.repuesto} € la unidad.</p>
+      <h3>Garantía legal</h3><p>Se aplica la garantía legal de conformidad frente a defectos de origen. Más detalle en las condiciones de venta.</p>`]
   };
   const dlg=document.getElementById("legal-dlg");
   function openLegal(k){ const d=L[k]; if(!d) return; document.getElementById("legal-title").textContent=d[0]; document.getElementById("legal-body").innerHTML=d[1]+`<p class="fine">Última actualización: ${new Date().toLocaleDateString("es-ES",{month:"long",year:"numeric"})}.</p>`; if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open",""); dlg.querySelector(".legal-in").scrollTop=0; }
