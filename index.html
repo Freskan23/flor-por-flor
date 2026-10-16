@@ -961,7 +961,7 @@ const SFX = (()=>{
 
   // regalo
   const rg=document.getElementById("f-regalo"), gn=document.querySelector(".gift-note");
-  if(DIRECT) rg.parentElement.querySelector("small").textContent = "Lo enviamos envuelto, con una nota escrita a mano y sin el precio dentro. Gratis. El texto de la nota lo escribes en la página de pago.";
+  if(DIRECT) rg.parentElement.querySelector("small").textContent = "Lo enviamos envuelto, con una nota escrita a mano y sin el precio dentro. Gratis. Después del pago te escribimos para saber qué quieres que diga la nota.";
   rg.addEventListener("change", ()=>{ gn.hidden=!rg.checked || DIRECT; if(rg.checked) SFX.color(); });
 })();
 /* ===== Probador: abrir, pasos, vistas ===== */
