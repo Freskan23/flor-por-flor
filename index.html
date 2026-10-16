@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Cerezos de luz con cada flor pintada a mano, una a una. Elige altura y color y encarga el tuyo.">
+<meta property="og:title" content="Flor por Flor · Cerezos de luz pintados a mano">
+<meta property="og:description" content="Cada flor, pintada a mano. Encarga tu cerezo de luz.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='%23ff5fd2'%3E%3Ccircle cx='20' cy='9' r='7'/%3E%3Ccircle cx='30.5' cy='16.6' r='7'/%3E%3Ccircle cx='26.5' cy='29' r='7'/%3E%3Ccircle cx='13.5' cy='29' r='7'/%3E%3Ccircle cx='9.5' cy='16.6' r='7'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='4' fill='%23fff'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Flor por Flor · Cerezos de luz pintados a mano</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: una sola noche. Un cerezo 3D fijo detrás de todo; al hacer scroll la cámara viaja (árbol entero → una flor → contraluz → configurador).
+   El texto vive en la columna izquierda; el árbol, a la derecha. Mundo oscuro único por decisión: el producto solo existe encendido. */
+:root{
+  color-scheme: dark;
+  --night:#0c0613;
+  --night-2:#170c22;
+  --line:#3a2449;
+  --ink:#f8f0fb;
+  --muted:#b7a2c6;
+  --petal:#ffc4ee;
+  --glow:#ff5fd2;
+  --violet:#8f6bff;
+  --f-display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --f-body:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+  --f-hand:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --step--1:clamp(.8rem,.78rem + .1vw,.88rem);
+  --step-0:clamp(1rem,.96rem + .2vw,1.1rem);
+  --step-1:clamp(1.2rem,1.05rem + .6vw,1.55rem);
+  --step-2:clamp(2rem,1.4rem + 2.4vw,3.4rem);
+  --step-3:clamp(3.2rem,1.6rem + 6.6vw,8.2rem);
+  --gl:max(16px, env(safe-area-inset-left, 0px));
+  --gr:max(16px, env(safe-area-inset-right, 0px));
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--night);color:var(--ink);font-family:var(--f-body);font-size:var(--step-0);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:var(--f-display);font-weight:300;margin:0;line-height:1;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--glow);outline-offset:3px;border-radius:6px}
+.hand{font-family:var(--f-hand);font-weight:500;color:var(--petal);line-height:1}
+.eyebrow{font-size:var(--step--1);letter-spacing:.28em;text-transform:uppercase;color:var(--petal);font-weight:500}
+
+/* ===== escena 3D ===== */
+#stage{position:fixed;inset:0;z-index:0;display:block;width:100%;height:100%}
+.fallback{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(40vw 40vw at 72% 42%, color-mix(in srgb,var(--glow) 38%,transparent), transparent 70%),
+  radial-gradient(60vw 30vw at 72% 100%, color-mix(in srgb,var(--violet) 22%,transparent), transparent 70%), var(--night)}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:
+  linear-gradient(90deg, color-mix(in srgb,var(--night) 88%,transparent) 0%, color-mix(in srgb,var(--night) 55%,transparent) 34%, transparent 58%),
+  linear-gradient(0deg, color-mix(in srgb,var(--night) 70%,transparent) 0%, transparent 22%)}
+@media (max-width:820px){
+  .veil{background:linear-gradient(0deg, color-mix(in srgb,var(--night) 92%,transparent) 0%, color-mix(in srgb,var(--night) 70%,transparent) 45%, transparent 75%)}
+}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
+
+/* ===== barra ===== */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--night)}
+.bar{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:19;padding-left:var(--gl);padding-right:var(--gr)}
+.bar .in{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-style:italic;font-size:1.3rem;letter-spacing:-.01em}
+.brand svg{width:24px;height:24px;color:var(--glow);filter:drop-shadow(0 0 8px var(--glow))}
+.bar nav{display:flex;gap:28px;align-items:center;font-size:.92rem;color:var(--muted)}
+.bar nav a{text-decoration:none;transition:color .2s}
+.bar nav a:hover{color:var(--ink)}
+@media (max-width:820px){.bar nav a:not(.btn){display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;font:inherit;font-weight:600;text-decoration:none;border-radius:999px;padding:.85em 1.5em;background:var(--petal);color:#2b0b28;transition:box-shadow .35s,transform .2s,background .2s}
+.btn:hover{box-shadow:0 0 0 6px color-mix(in srgb,var(--glow) 20%,transparent),0 0 46px color-mix(in srgb,var(--glow) 65%,transparent);transform:translateY(-1px)}
+.btn.ghost{background:color-mix(in srgb,var(--night) 40%,transparent);color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--petal) 35%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--petal),0 0 30px color-mix(in srgb,var(--glow) 30%,transparent)}
+.bar .btn{padding:.6em 1.15em;font-size:.9rem}
+.btn[disabled]{opacity:.6;cursor:wait}
+
+/* ===== capítulos ===== */
+main{position:relative;z-index:3}
+.chap{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding-left:var(--gl);padding-right:var(--gr);padding-block:120px 80px}
+.chap .in{width:100%;max-width:1320px;margin:0 auto}
+.col{max-width:560px;display:grid;gap:22px}
+@media (max-width:820px){
+  .chap{align-items:flex-end;padding-block:56vh 56px}
+  .chap.tall{padding-block:46vh 56px}
+}
+
+/* hero */
+.hero h1{font-size:var(--step-3);line-height:.92}
+.hero h1 .l1{display:block;font-weight:200}
+.hero h1 .paint{display:block;font-family:var(--f-hand);font-weight:700;color:var(--petal);font-size:1.18em;line-height:.8;letter-spacing:0;margin:.06em 0 .02em -.04em;transform:rotate(-4deg);transform-origin:left;text-shadow:0 0 28px color-mix(in srgb,var(--glow) 70%,transparent),0 0 80px color-mix(in srgb,var(--glow) 45%,transparent);
+  background:linear-gradient(90deg,var(--petal) 0 50%,color-mix(in srgb,var(--petal) 18%,transparent) 50% 100%);background-size:200% 100%;background-position:0 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:brush 2.4s cubic-bezier(.6,.05,.25,1) .4s both}
+@keyframes brush{from{background-position:100% 0}to{background-position:0 0}}
+.hero h1 .l3{display:block;font-style:italic;font-weight:300}
+.hero .lead{font-size:var(--step-1);line-height:1.45;color:var(--muted);max-width:30ch}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+.meter{position:fixed;right:max(28px, env(safe-area-inset-right,0px));bottom:max(26px, env(safe-area-inset-bottom,0px));z-index:4;display:grid;justify-items:end;gap:6px;text-align:right;transition:opacity .5s}
+.meter .hand{font-size:clamp(1.5rem,1.1rem + 1vw,2.2rem);text-shadow:0 2px 20px var(--night)}
+.meter b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.meter .bar-p{width:180px;height:2px;background:color-mix(in srgb,var(--petal) 20%,transparent);border-radius:2px;overflow:hidden}
+.meter .bar-p i{display:block;height:100%;width:0;background:var(--glow);box-shadow:0 0 12px var(--glow)}
+.meter button{background:none;border:0;color:var(--muted);font:inherit;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:4px 0}
+.meter button:hover{color:var(--ink)}
+@media (max-width:820px){.meter{top:calc(env(safe-area-inset-top,0px) + 74px);bottom:auto;right:var(--gr)}.meter .bar-p{width:120px}}
+.scrollhint{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;margin-top:18px}
+.scrollhint i{width:1px;height:42px;background:linear-gradient(var(--petal),transparent);animation:drip 2.2s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* capítulos de texto */
+.chap h2{font-size:var(--step-2)}
+.chap h2 em{font-style:italic;color:var(--petal)}
+.chap .sub{color:var(--muted);max-width:46ch}
+.notes{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:22px}
+.notes li{display:grid;grid-template-columns:auto 1fr;gap:16px}
+.notes .k{font-family:var(--f-hand);font-size:1.9rem;color:var(--glow);line-height:1;min-width:1.1em;text-shadow:0 0 14px var(--glow)}
+.notes h3{font-size:var(--step-1);font-weight:400}
+.notes p{color:var(--muted);margin-top:4px;font-size:.98rem}
+
+.steps{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 28px}
+.steps li{display:grid;gap:8px;align-content:start;border-top:1px solid color-mix(in srgb,var(--petal) 22%,transparent);padding-top:16px}
+.steps .n{font-family:var(--f-hand);font-size:2.3rem;color:var(--glow);line-height:.9;text-shadow:0 0 16px var(--glow)}
+.steps h3{font-size:1.25rem;font-weight:400}
+.steps p{color:var(--muted);font-size:.95rem}
+@media (max-width:480px){.steps{grid-template-columns:1fr}}
+.quote{font-size:clamp(1.6rem,1.2rem + 1.4vw,2.4rem);transform:rotate(-2deg);max-width:22ch;text-shadow:0 0 30px color-mix(in srgb,var(--glow) 40%,transparent)}
+
+/* ===== configurador ===== */
+.glass{background:color-mix(in srgb,var(--night-2) 70%,transparent);border:1px solid color-mix(in srgb,var(--petal) 16%,transparent);border-radius:22px;backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 30px 100px -40px color-mix(in srgb,var(--glow) 50%,transparent)}
+form{display:grid;gap:20px;padding:clamp(20px,3vw,32px)}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:10px;min-width:0}
+legend,.l{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:0;margin-bottom:4px}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.choice{position:relative;min-width:0}
+.choice input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.choice span{display:grid;gap:2px;padding:12px 12px;border-radius:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--night) 60%,transparent);cursor:pointer;transition:border-color .2s,box-shadow .25s;height:100%}
+.choice b{font-weight:600;font-size:.98rem}
+.choice small{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.choice input:checked + span{border-color:var(--petal);box-shadow:0 0 0 1px var(--petal),0 0 34px -6px var(--glow)}
+.choice input:focus-visible + span{outline:2px solid var(--glow);outline-offset:2px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:7px;vertical-align:0;box-shadow:0 0 12px currentColor}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:520px){.row,.choices{grid-template-columns:1fr}}
+.field{display:grid;gap:6px;min-width:0}
+input[type=text],input[type=email],input[type=tel],textarea{width:100%;font:inherit;color:var(--ink);background:color-mix(in srgb,var(--night) 70%,transparent);border:1px solid var(--line);border-radius:12px;padding:.72em .9em;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus{outline:none;border-color:var(--petal);box-shadow:0 0 0 3px color-mix(in srgb,var(--glow) 25%,transparent)}
+textarea{min-height:84px;resize:vertical}
+::placeholder{color:color-mix(in srgb,var(--muted) 70%,transparent)}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.total .hand{font-size:1.55rem}
+.total .p{font-family:var(--f-display);font-size:2.2rem;font-weight:300;font-variant-numeric:tabular-nums}
+.fine{color:var(--muted);font-size:.84rem}
+.err{color:#ffb4c8;font-size:.88rem;min-height:1.2em}
+.done{display:grid;gap:14px;justify-items:start;padding:clamp(22px,3vw,34px)}
+.done h3{font-size:var(--step-2);font-style:italic}
+.copybox{width:100%;white-space:pre-wrap;font-size:.88rem;background:var(--night);border:1px dashed var(--line);border-radius:10px;padding:12px;color:var(--muted);margin:0}
+
+/* panel taller */
+.inbox{position:relative;z-index:3;padding:80px var(--gr) 80px var(--gl);background:var(--night)}
+.inbox .in{max-width:1320px;margin:0 auto;display:grid;gap:20px}
+.inbox h2{font-size:var(--step-2)}
+.inbox h2 em{font-style:italic;color:var(--petal)}
+.scroll{overflow-x:auto}
+.inbox table{width:100%;border-collapse:collapse;font-size:.92rem}
+.inbox th,.inbox td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.inbox th{color:var(--muted);font-weight:500;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase}
+.state{padding:3px 12px;border-radius:999px;border:1px solid var(--line);background:var(--night);color:var(--ink);cursor:pointer;font:inherit;font-size:.8rem}
+.state[data-s="nuevo"]{border-color:var(--glow);color:var(--petal)}
+.state[data-s="confirmado"]{border-color:#b9a0ff;color:#dcd0ff}
+.state[data-s="enviado"]{border-color:#7fd6b0;color:#bff2da}
+.state[data-s="pendiente de pago"]{border-color:#ffcf6b;color:#ffe2a6}
+.state[data-s="pagado"]{border-color:#7fd6b0;color:#bff2da;background:color-mix(in srgb,#7fd6b0 14%,var(--night))}
+
+/* faq */
+.faq{display:grid;gap:0}
+.faq details{border-top:1px solid color-mix(in srgb,var(--petal) 18%,transparent);padding:16px 0}
+.faq summary{cursor:pointer;font-family:var(--f-display);font-size:1.3rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--petal);font-family:var(--f-body)}
+.faq details[open] summary::after{content:"–"}
+.faq p{color:var(--muted);margin-top:8px}
+footer{position:relative;z-index:3;padding:36px var(--gr) 48px var(--gl);color:var(--muted);font-size:.9rem;border-top:1px solid color-mix(in srgb,var(--petal) 14%,transparent);background:color-mix(in srgb,var(--night) 80%,transparent)}
+footer .in{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:baseline}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.hero h1 .paint{background-position:0 0}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="blossom" viewBox="0 0 40 40"><g fill="currentColor">
+    <path id="pt" d="M20 3c4 0 6 3 5 7l-2 4-3-2-3 2-2-4c-1-4 1-7 5-7z"/>
+    <use href="#pt" transform="rotate(72 20 20)"/><use href="#pt" transform="rotate(144 20 20)"/><use href="#pt" transform="rotate(216 20 20)"/><use href="#pt" transform="rotate(288 20 20)"/></g>
+    <circle cx="20" cy="20" r="3.6" fill="#fff"/></symbol>
+</defs></svg>
+
+<div class="fallback" aria-hidden="true"></div>
+<canvas id="stage" aria-label="Cerezo de luz en 3D que gira lentamente mientras sus flores se pintan una a una"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="bar"><div class="in">
+  <a class="brand" href="#inicio"><svg><use href="#blossom"/></svg>Flor por Flor</a>
+  <nav>
+    <a href="#detalle">La flor</a>
+    <a href="#proceso">Cómo lo hacemos</a>
+    <a href="#preguntas">Preguntas</a>
+    <a class="btn" href="#disena">Diseña el tuyo</a>
+  </nav>
+</div></header>
+
+<div class="meter" id="meter" aria-live="off">
+  <span class="hand">flor <b id="count">0</b> de <b id="total">250</b></span>
+  <span class="bar-p"><i id="prog"></i></span>
+  <button type="button" id="repaint">Pintar otra vez</button>
+</div>
+
+<main id="inicio">
+  <section class="chap hero" data-stop="hero">
+    <div class="in"><div class="col">
+      <p class="eyebrow">Cerezos de luz · pintados a mano</p>
+      <h1><span class="l1">Cada flor,</span><span class="paint">pintada</span><span class="l3">a mano.</span></h1>
+      <p class="lead">Un cerezo lleva cientos de flores. Las pintamos una a una para que, al encenderlo, brille como un cerezo en plena noche.</p>
+      <div class="ctas">
+        <a class="btn" href="#disena">Diseña tu cerezo</a>
+        <a class="btn ghost" href="#detalle">Mira una flor de cerca</a>
+      </div>
+      <p class="scrollhint"><i></i>Baja despacio</p>
+    </div></div>
+  </section>
+
+  <section class="chap" id="detalle" data-stop="detalle">
+    <div class="in"><div class="col">
+      <p class="eyebrow">La flor</p>
+      <h2>Cinco pétalos.<br><em>Un pincel.</em></h2>
+      <p class="sub">Esta es una sola de las flores de tu árbol. Ninguna sale igual que la de al lado.</p>
+      <ol class="notes">
+        <li><span class="k">a</span><div><h3>Pinceladas a la vista</h3><p>Cada pétalo se pinta a pincel, de la base a la punta. Los trazos se notan, y por eso ninguna flor es idéntica.</p></div></li>
+        <li><span class="k">b</span><div><h3>El centro, más intenso</h3><p>Una mancha fucsia en la base de cada pétalo y los estambres pintados uno a uno, como en una flor de cerezo de verdad.</p></div></li>
+        <li><span class="k">c</span><div><h3>Luz desde el corazón</h3><p>La luz nace dentro de la flor y atraviesa la pintura. Encendido, el pétalo brilla de color.</p></div></li>
+      </ol>
+    </div></div>
+  </section>
+
+  <section class="chap tall" id="proceso" data-stop="proceso">
+    <div class="in"><div class="col">
+      <p class="eyebrow">Cómo lo hacemos</p>
+      <h2>De flor blanca a <em>flor encendida</em></h2>
+      <p class="sub">No hay cadena de montaje. Cada cerezo se pinta cuando llega tu encargo.</p>
+      <ol class="steps">
+        <li><span class="n">1</span><h3>Revisamos el árbol</h3><p>Comprobamos cada luz antes de tocar un pincel.</p></li>
+        <li><span class="n">2</span><h3>Abrimos las ramas</h3><p>Una a una, buscando la silueta de un cerezo.</p></li>
+        <li><span class="n">3</span><h3>Pintamos cada flor</h3><p>Con pincel fino. Es el paso más lento y el que hace que brille así.</p></li>
+        <li><span class="n">4</span><h3>Lo encendemos a oscuras</h3><p>Lo revisamos flor por flor antes de embalarlo.</p></li>
+      </ol>
+      <p class="quote hand">“si una flor no brilla como debe, se vuelve a pintar”</p>
+    </div></div>
+  </section>
+
+  <section class="chap tall" id="disena" data-stop="disena">
+    <div class="in"><div class="col" style="max-width:600px">
+      <p class="eyebrow">Diseña el tuyo</p>
+      <h2>Elige altura y color. <em>Lo verás pintarse.</em></h2>
+      <div id="order-slot" class="glass">
+        <form id="order-form" novalidate>
+          <fieldset><legend>Altura</legend><div class="choices" id="size-choices"></div></fieldset>
+          <fieldset><legend>Color de las flores</legend><div class="choices" id="color-choices"></div></fieldset>
+          <div class="total"><span class="hand" id="sum-flowers"></span><span class="p" id="sum-price"></span></div>
+          <div class="row">
+            <div class="field"><label class="l" for="f-nombre">Nombre</label><input type="text" id="f-nombre" name="nombre" autocomplete="name" required></div>
+            <div class="field"><label class="l" for="f-ciudad">Ciudad</label><input type="text" id="f-ciudad" name="ciudad" autocomplete="address-level2"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label class="l" for="f-email">Email</label><input type="email" id="f-email" name="email" autocomplete="email"></div>
+            <div class="field"><label class="l" for="f-tel">Teléfono</label><input type="tel" id="f-tel" name="telefono" autocomplete="tel"></div>
+          </div>
+          <div class="field"><label class="l" for="f-msg">¿Algo especial? (opcional)</label><textarea id="f-msg" name="mensaje" placeholder="Es un regalo, lo necesito para una fecha, otro color…"></textarea></div>
+          <p class="err" id="f-err" role="alert"></p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+            <button class="btn" type="submit" id="f-send">Enviar encargo</button>
+            <span class="fine" id="pay-note">No pagas nada hasta que te confirmemos precio y fecha.</span>
+          </div>
+        </form>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="chap" id="preguntas" data-stop="preguntas">
+    <div class="in"><div class="col">
+      <p class="eyebrow">Preguntas</p>
+      <h2>Lo que <em>nos suelen preguntar</em></h2>
+      <div class="faq">
+        <details><summary>¿Cuánto tarda en llegar?</summary><p>Lo pintamos cuando recibimos tu encargo. Al confirmarlo te damos una fecha según los cerezos que tengamos en el taller.</p></details>
+        <details><summary>¿Todos son iguales?</summary><p>No del todo. Al estar pintadas a mano, cada flor tiene un tono un poco distinto y cada árbol queda único.</p></details>
+        <details><summary>¿Puedo pedir otro color?</summary><p>Sí. Escríbelo en el encargo y te decimos si podemos hacerlo.</p></details>
+        <details><summary>¿Sirve como regalo?</summary><p>Mucho. Indícalo en el encargo y lo preparamos para regalo.</p></details>
+      </div>
+    </div></div>
+  </section>
+</main>
+
+<section id="taller" class="inbox" hidden>
+  <div class="in">
+    <p class="eyebrow">Solo lo veis vosotros</p>
+    <h2>Encargos <em>recibidos</em></h2>
+    <p style="color:var(--muted)">Toca el estado para cambiarlo: nuevo → confirmado → enviado.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Fecha</th><th>Cliente</th><th>Contacto</th><th>Cerezo</th><th>Nota</th><th>Estado</th></tr></thead>
+      <tbody id="inbox-body"><tr><td colspan="6" style="color:var(--muted)">Todavía no hay encargos. Aparecerán aquí en cuanto alguien envíe el formulario.</td></tr></tbody>
+    </table></div>
+  </div>
+</section>
+
+<footer><div class="in">
+  <span class="brand"><svg><use href="#blossom"/></svg>Flor por Flor</span>
+  <span class="hand" style="font-size:1.4rem">pintado a mano, flor por flor</span>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/utils/BufferGeometryUtils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/BokehShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/BokehPass.js"></script>
+
+<script>
+/* ===== Tamaños, precios y colores: cambiadlos aquí ===== */
+const SIZES = [
+  { id:"pequeno", name:"Pequeño", height:"120 cm", h:1.2, flowers:150, price:149 },
+  { id:"mediano", name:"Mediano", height:"150 cm", h:1.5, flowers:250, price:219, star:true },
+  { id:"grande",  name:"Grande",  height:"180 cm", h:1.8, flowers:350, price:289 },
+];
+const COLORS = [
+  { id:"rosa",   name:"Rosa sakura",  note:"el clásico",  css:"#ff6fd8", halo:0xff4fcf, light:0xff63d2, stamen:[1.0,0.12,0.55],
+    paint:{ base:"#f06cbc", light:"#ffa6d8", deep:"#e0469f", blotch:"#c80a6c" } },
+  { id:"blanco", name:"Blanco nieve", note:"centro rosa", css:"#fff0fa", halo:0xffd9f0, light:0xfff0f6, stamen:[1.0,0.42,0.72],
+    paint:{ base:"#eadbe4", light:"#f6eef3", deep:"#d9bccd", blotch:"#f0559f" } },
+  { id:"lila",   name:"Lila",         note:"más intenso", css:"#a98bff", halo:0x8b5cff, light:0x9e78ff, stamen:[0.55,0.2,1.0],
+    paint:{ base:"#9a6cf0", light:"#c3a6ff", deep:"#7a48e0", blotch:"#5212b8" } },
+];
+/* ===== Pago con Stripe: un Payment Link por tamaño (vacío = sin pago online) ===== */
+// MODO PRUEBA: cambiar por los enlaces reales (buy.stripe.com/...) cuando la cuenta esté verificada
+const STRIPE_LINKS = {
+  pequeno: "https://buy.stripe.com/test_9B68wOgK32av7kw2Pm4Ja01",
+  mediano: "https://buy.stripe.com/test_4gM5kCctN4iDcEQblS4Ja00",
+  grande:  "https://buy.stripe.com/test_eVqeVc9hBaH148kdu04Ja02",
+};
+const PAY_ONLINE = Object.values(STRIPE_LINKS).some(Boolean);
+const eur = n => n.toLocaleString("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ===== Configurador ===== */
+document.getElementById("size-choices").innerHTML = SIZES.map(s=>`
+  <label class="choice"><input type="radio" name="size" id="s-${s.id}" value="${s.id}" ${s.star?"checked":""}><span><b>${s.name}</b><small>${s.height} · ${eur(s.price)}</small></span></label>`).join("");
+document.getElementById("color-choices").innerHTML = COLORS.map((c,i)=>`
+  <label class="choice"><input type="radio" name="color" id="c-${c.id}" value="${c.id}" ${i===0?"checked":""}><span><b><i class="sw" style="color:${c.css};background:${c.css}"></i>${c.name}</b><small>${c.note}</small></span></label>`).join("");
+
+function current(){
+  const f = document.getElementById("order-form");
+  const size = SIZES.find(s=>s.id===f.size.value) || SIZES[1];
+  const color = COLORS.find(c=>c.id===f.color.value) || COLORS[0];
+  return { f, size, color };
+}
+function updateSum(){
+  const { size } = current();
+  document.getElementById("sum-flowers").textContent = `≈ ${size.flowers} flores pintadas a mano`;
+  document.getElementById("sum-price").textContent = eur(size.price);
+  document.getElementById("total").textContent = size.flowers;
+}
+updateSum();
+if(PAY_ONLINE){ document.getElementById("f-send").textContent = "Encargar y pagar"; document.getElementById("pay-note").textContent = "Pago seguro con tarjeta a través de Stripe."; }
+document.getElementById("order-form").addEventListener("change", e=>{
+  updateSum();
+  const { size, color } = current();
+  if(e.target.name==="size") window.tree?.setSize(size);
+  if(e.target.name==="color") window.tree?.setColor(color);
+});
+
+/* ===== El cerezo 3D ===== */
+(function(){
+  const canvas = document.getElementById("stage");
+  if(!window.THREE || !THREE.EffectComposer || !THREE.UnrealBloomPass || !THREE.BufferGeometryUtils){ canvas.remove(); return; }
+  let renderer;
+  try{ renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:"high-performance"}); }
+  catch(e){ canvas.remove(); return; }
+  document.querySelector(".fallback").style.display = "none";
+
+  const BG = 0x0c0613;
+  renderer.setClearColor(BG,1);
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1, 1.75));
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(BG, 0.11);
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.004, 60);
+
+  const rtMS = new THREE.WebGLRenderTarget(2,2,{samples: renderer.capabilities.isWebGL2 ? 4 : 0});
+  const composer = new THREE.EffectComposer(renderer, rtMS);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(512,512), 1.2, 0.6, 0.3);
+  composer.addPass(bloom);
+  let bokeh = null;
+  if(THREE.BokehPass && THREE.BokehShader){
+    bokeh = new THREE.BokehPass(scene, camera, {focus:0.12, aperture:0.0, maxblur:0.012});
+    bokeh.enabled = false; composer.addPass(bokeh);
+  }
+
+  // luces
+  const amb = new THREE.AmbientLight(0x5a3d7a, 0.55); scene.add(amb);
+  const crownLight = new THREE.PointLight(0xff63d2, 2.2, 5, 1.6); scene.add(crownLight);
+  const rim = new THREE.DirectionalLight(0x9c86ff, 0.9); rim.position.set(-1.5,2.5,-2.5); scene.add(rim);
+  const studio = new THREE.PointLight(0xfff0f8, 0.4, 3, 1.2); scene.add(studio);
+  const key = new THREE.DirectionalLight(0xfff3f7, 0); scene.add(key); scene.add(key.target);
+  const kick = new THREE.DirectionalLight(0xff9ad8, 0); scene.add(kick); scene.add(kick.target);
+  let envTex = null;
+  try{ if(THREE.RoomEnvironment){ const pm=new THREE.PMREMGenerator(renderer); envTex=pm.fromScene(new THREE.RoomEnvironment(),0.04).texture; pm.dispose(); } }catch(e){ envTex=null; }
+  const glowU = { value: 1 };
+
+  /* ---------- texturas pintadas a mano (generadas) ---------- */
+  function R0(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+  // contorno del pétalo en un cuadrado de lado S (base abajo, punta arriba)
+  function petalPath(g, S, r){
+    const cx=S/2, base=S*0.97, top=S*0.05, w=S*0.45;
+    const notch = S*(0.035+r()*0.03), skew=(r()-.5)*S*0.04;
+    g.beginPath();
+    g.moveTo(cx-S*0.05, base);
+    g.bezierCurveTo(cx-w*0.55, S*0.78, cx-w*1.02, S*0.42, cx-w*0.92+skew, S*0.18);
+    g.bezierCurveTo(cx-w*0.8+skew, top+S*0.02, cx-S*0.12, top-S*0.005, cx+skew*.5, top+notch);
+    g.bezierCurveTo(cx+S*0.12, top-S*0.005, cx+w*0.8+skew, top+S*0.02, cx+w*0.92+skew, S*0.18);
+    g.bezierCurveTo(cx+w*1.02, S*0.42, cx+w*0.55, S*0.78, cx+S*0.05, base);
+    g.closePath();
+  }
+  function paintAtlas(c){
+    const S=512, cv=document.createElement("canvas"); cv.width=cv.height=S*2; const g=cv.getContext("2d");
+    for(let q=0;q<4;q++){
+      const r=R0(101+q*17), ox=(q%2)*S, oy=Math.floor(q/2)*S;
+      g.save(); g.translate(ox,oy);
+      petalPath(g,S,r); g.save(); g.clip();
+      // fondo: plástico translúcido con la primera mano de pintura
+      const lg=g.createLinearGradient(0,S,0,0); lg.addColorStop(0,c.base); lg.addColorStop(1,c.light);
+      g.fillStyle=lg; g.fillRect(0,0,S,S);
+      // pinceladas siguiendo el pétalo, desde la base
+      for(let i=0;i<260;i++){
+        const x0=S*0.5+(r()-.5)*S*0.25, y0=S*(0.9+r()*0.08);
+        const ang=(r()-.5)*1.25, len=S*(0.45+r()*0.55);
+        const x1=x0+Math.sin(ang)*len, y1=y0-Math.cos(ang)*len;
+        const mx=(x0+x1)/2+(r()-.5)*S*0.08, my=(y0+y1)/2;
+        const pick=r();
+        g.strokeStyle = pick<.42? c.light : pick<.8? c.deep : "rgba(255,255,255,1)";
+        g.globalAlpha = pick<.42? 0.35+r()*0.4 : pick<.8? 0.3+r()*0.45 : 0.25+r()*0.35;
+        g.lineWidth = 1+r()*4.5; g.lineCap="round";
+        g.beginPath(); g.moveTo(x0,y0); g.quadraticCurveTo(mx,my,x1,y1); g.stroke();
+      }
+      g.globalAlpha=1;
+      // mancha intensa en la base, de borde irregular (pintada a pincel)
+      g.fillStyle=c.blotch; g.beginPath();
+      const bc=S*0.5, by=S*1.0, steps=46;
+      for(let i=0;i<=steps;i++){
+        const a=Math.PI + (i/steps)*Math.PI;
+        const rr=S*(0.26+0.06*Math.sin(i*1.7+q)+r()*0.07);
+        const px=bc+Math.cos(a)*rr*1.15, py=by+Math.sin(a)*rr*1.05;
+        i? g.lineTo(px,py) : g.moveTo(px,py);
+      }
+      g.closePath(); g.globalAlpha=.92; g.fill();
+      // sangrado de la mancha hacia fuera (trazos finos)
+      g.strokeStyle=c.blotch;
+      for(let i=0;i<70;i++){
+        const a=Math.PI*1.08+r()*Math.PI*0.84, r1=S*(0.2+r()*0.1), r2=r1+S*(0.05+r()*0.14);
+        g.globalAlpha=.25+r()*.45; g.lineWidth=1+r()*3.5;
+        g.beginPath(); g.moveTo(bc+Math.cos(a)*r1*1.15,by+Math.sin(a)*r1); g.lineTo(bc+Math.cos(a)*r2*1.1,by+Math.sin(a)*r2); g.stroke();
+      }
+      // motas sin pintar, como en el plástico real
+      g.fillStyle="#ffffff";
+      for(let i=0;i<55;i++){ g.globalAlpha=.25+r()*.4; g.beginPath(); g.arc(r()*S, r()*S*0.75, .6+r()*1.8, 0, 6.28); g.fill(); }
+      g.restore();
+      // canto del pétalo: plástico claro
+      petalPath(g,S,R0(101+q*17)); g.globalAlpha=.55; g.strokeStyle="rgba(255,255,255,.9)"; g.lineWidth=5; g.stroke();
+      g.globalAlpha=1; g.restore();
+    }
+    const t=new THREE.CanvasTexture(cv); t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy()); return t;
+  }
+  const atlases = {};
+  function atlasFor(c){ return atlases[c.id] || (atlases[c.id]=paintAtlas(c.paint)); }
+
+  // cinta de papel negro en espiral (ramas)
+  const barkTex = (()=>{ const W=128,Hc=256, cv=document.createElement("canvas"); cv.width=W; cv.height=Hc; const g=cv.getContext("2d");
+    g.fillStyle="#232025"; g.fillRect(0,0,W,Hc);
+    for(let k=-4;k<10;k++){ const y=k*34; g.fillStyle=k%2?"#1b191d":"#29262b"; g.beginPath(); g.moveTo(0,y); g.lineTo(W,y-40); g.lineTo(W,y-6); g.lineTo(0,y+34); g.fill();
+      g.strokeStyle="rgba(0,0,0,.75)"; g.lineWidth=2; g.beginPath(); g.moveTo(0,y+34); g.lineTo(W,y-6); g.stroke();
+      g.strokeStyle="rgba(255,255,255,.07)"; g.lineWidth=1; g.beginPath(); g.moveTo(0,y+31); g.lineTo(W,y-9); g.stroke(); }
+    const r=R0(9); for(let i=0;i<900;i++){ g.fillStyle=r()<.5?"rgba(255,255,255,.05)":"rgba(0,0,0,.18)"; g.fillRect(r()*W,r()*Hc,1+r()*2,1); }
+    const t=new THREE.CanvasTexture(cv); t.wrapS=t.wrapT=THREE.RepeatWrapping; return t; })();
+
+  function radialTex(stops){
+    const c=document.createElement("canvas"); c.width=c.height=256; const g=c.getContext("2d");
+    const gr=g.createRadialGradient(128,128,0,128,128,128); stops.forEach(([o,a])=>gr.addColorStop(o,`rgba(255,255,255,${a})`));
+    g.fillStyle=gr; g.fillRect(0,0,256,256); return new THREE.CanvasTexture(c);
+  }
+  const haloTex = radialTex([[0,.62],[0.22,.34],[0.5,.1],[1,0]]);
+  const poolTex = radialTex([[0,.9],[0.3,.35],[1,0]]);
+  const fallTex = (()=>{ const c=document.createElement("canvas"); c.width=c.height=64; const g=c.getContext("2d");
+    g.translate(32,32); g.fillStyle="#fff"; g.beginPath(); g.moveTo(0,22); g.bezierCurveTo(20,10,16,-18,4,-22); g.lineTo(0,-16); g.lineTo(-4,-22); g.bezierCurveTo(-16,-18,-20,10,0,22); g.fill();
+    return new THREE.CanvasTexture(c); })();
+
+  /* ---------- geometría de una flor real ---------- */
+  // 5 pétalos curvados en copa, cada uno con una variante del atlas
+  const PL=0.0165, PW=0.0125, R_IN=0.0036;
+  const flowerGeo = (()=>{
+    const parts=[], NU=7, NV=9;
+    for(let k=0;k<5;k++){
+      const pos=[], uv=[], idx=[];
+      const q=k%4, qx=(q%2)*.5, qy=1-(Math.floor(q/2)+1)*.5;
+      for(let j=0;j<=NV;j++) for(let i=0;i<=NU;i++){
+        const u=i/NU, v=j/NV;
+        const x=(u-.5)*PW, y=R_IN + v*PL;
+        const z = 0.0075*v*v + 0.006*Math.pow(u-.5,2)*v*2 - 0.0012*Math.sin(v*Math.PI)*0;
+        pos.push(x,y,z); uv.push(qx+u*.5, qy+v*.5);
+      }
+      for(let j=0;j<NV;j++) for(let i=0;i<NU;i++){ const a=j*(NU+1)+i, b=a+1, c=a+NU+1, d=c+1; idx.push(a,c,b, b,c,d); }
+      const g=new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(pos,3));
+      g.setAttribute("uv", new THREE.Float32BufferAttribute(uv,2));
+      g.setIndex(idx); g.computeVertexNormals();
+      g.rotateX(0.22); g.rotateZ(k*Math.PI*2/5 + (k%2?0.04:-0.03));
+      parts.push(g);
+    }
+    return THREE.BufferGeometryUtils.mergeBufferGeometries(parts);
+  })();
+  // centro: copa pintada + 8 estambres finos que se abren (tubos curvos con punta redondeada)
+  const stamenGeo = (()=>{ const parts=[];
+    const tagT = (g, fn)=>{ const pos=g.attributes.position, col=new Float32Array(pos.count*3);
+      for(let i=0;i<pos.count;i++){ const t=fn(pos.getX(i),pos.getY(i),pos.getZ(i)); col[i*3]=t; col[i*3+1]=t; col[i*3+2]=t; }
+      g.setAttribute("tcol", new THREE.BufferAttribute(col,3)); return g; };
+    // copa (receptáculo) donde nacen pétalos y estambres
+    const prof=[]; for(let i=0;i<=8;i++){ const t=i/8; prof.push(new THREE.Vector2(.0014+t*.0026, .0011*t*t)); }
+    const cup=new THREE.LatheGeometry(prof,40); cup.rotateX(Math.PI/2);
+    tagT(cup,(x,y,z)=>0.55+0.45*Math.min(1,Math.hypot(x,y)/.004)); parts.push(cup);
+    for(let i=0;i<8;i++){ const a=i/8*Math.PI*2+.2+(i%2)*.12, lean=.32+(i%3)*.08, len=.0052+(i%3)*.0007;
+      const curve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,len*.55), new THREE.Vector3(Math.sin(lean)*len*.55,0,len));
+      const g=new THREE.TubeGeometry(curve,10,.00033,10,false);
+      const tip=new THREE.SphereGeometry(.00046,14,10); tip.translate(Math.sin(lean)*len*.55,0,len);
+      [g,tip].forEach(x=>{ tagT(x,(px,py,pz)=>Math.min(1,pz/len)); x.translate(.0021,0,.0004); x.rotateZ(a); });
+      parts.push(g,tip); }
+    parts.forEach(g=>{ g.deleteAttribute("uv"); });
+    const m=THREE.BufferGeometryUtils.mergeBufferGeometries(parts.map(g=>g.index?g.toNonIndexed():g));
+    m.setAttribute("color", new THREE.BufferAttribute(new Float32Array(m.attributes.position.count*3),3));
+    return m; })();
+  function recolorStamens(c){ // base transparente-rosada → punta fucsia pintada
+    const t=stamenGeo.attributes.tcol.array, col=stamenGeo.attributes.color.array, st=c.stamen;
+    for(let i=0;i<t.length;i+=3){ const k=Math.pow(t[i],.7); for(let j=0;j<3;j++){ const b=0.86-(0.86-st[j])*0.3; col[i+j]= b-(b-st[j])*k*0.95; } }
+    stamenGeo.attributes.color.needsUpdate=true; }
+  // versión ligera del centro para el resto de flores del árbol
+  const stamenLoGeo = (()=>{ const parts=[];
+    for(let i=0;i<7;i++){ const a=i/7*Math.PI*2+.3;
+      const g=new THREE.CylinderGeometry(.00034,.0004,.0056,5,1); g.rotateX(Math.PI/2); g.translate(0,0,.0028); g.rotateY(.3); g.translate(.0021,0,.0004); g.rotateZ(a);
+      g.deleteAttribute("uv"); parts.push(g.toNonIndexed()); }
+    return THREE.BufferGeometryUtils.mergeBufferGeometries(parts); })();
+  const domeLoGeo = (()=>{ const d=new THREE.SphereGeometry(.0018,12,6,0,Math.PI*2,0,Math.PI/2); d.rotateX(Math.PI/2); d.translate(0,0,.0006); return d; })();
+  // cúpula transparente (lente) + aros concéntricos
+  const domeGeo = (()=>{ const d=new THREE.SphereGeometry(.0018,32,16,0,Math.PI*2,0,Math.PI/2); d.rotateX(Math.PI/2); d.translate(0,0,.0006);
+    const ring=new THREE.TorusGeometry(.0019,.00028,12,48); ring.translate(0,0,.0007);
+    const ring2=new THREE.TorusGeometry(.0009,.00016,10,36); ring2.translate(0,0,.0021);
+    [d,ring,ring2].forEach(x=>x.deleteAttribute("uv"));
+    return THREE.BufferGeometryUtils.mergeBufferGeometries([d,ring,ring2].map(x=>x.toNonIndexed())); })();
+  // resplandor suave de la luz dentro de la cúpula
+  const coreGeo = new THREE.CircleGeometry(.0026,32); coreGeo.translate(0,0,.0012);
+  const glowTex = (()=>{ const c=document.createElement("canvas"); c.width=c.height=128; const g=c.getContext("2d");
+    const gr=g.createRadialGradient(64,64,0,64,64,64); gr.addColorStop(0,"rgba(255,255,255,1)"); gr.addColorStop(.18,"rgba(255,240,250,.85)"); gr.addColorStop(.45,"rgba(255,200,235,.25)"); gr.addColorStop(1,"rgba(255,180,230,0)");
+    g.fillStyle=gr; g.fillRect(0,0,128,128); return new THREE.CanvasTexture(c); })();
+  // portalámparas de plástico transparente detrás de la flor (abierto por delante)
+  const socketGeo = (()=>{ const g=new THREE.CylinderGeometry(.0032,.0034,.0085,32,1,true); g.rotateX(Math.PI/2); g.translate(0,0,-.0046); return g; })();
+
+  // material de pétalo: mezcla "plástico sin pintar" → "pintado" por flor
+  const petalMat = new THREE.MeshBasicMaterial({map:null, side:THREE.DoubleSide, alphaTest:.45, fog:true});
+  petalMat.onBeforeCompile = sh=>{
+    sh.vertexShader = sh.vertexShader.replace("#include <common>","#include <common>\nattribute float aPaint;\nvarying float vPaint;")
+      .replace("#include <begin_vertex>","#include <begin_vertex>\nvPaint = aPaint;");
+    sh.fragmentShader = sh.fragmentShader.replace("#include <common>","#include <common>\nvarying float vPaint;")
+      .replace("#include <map_fragment>",`
+        #ifdef USE_MAP
+          vec4 texel = texture2D(map, vUv);
+          float p = clamp(vPaint, 0.0, 1.0);
+          float flash = max(vPaint - 1.0, 0.0);
+          vec3 clear = vec3(0.30,0.28,0.33) + vec3(0.10) * (1.0 - vUv.y);
+          float pv = fract(vUv.y * 2.0);
+          diffuseColor.rgb = mix(clear, texel.rgb * 0.92, p) * (1.0 + flash) * mix(1.0, uGlow, pv);
+          diffuseColor.a *= texel.a;
+        #endif`)
+      .replace("varying float vPaint;","varying float vPaint;\nuniform float uGlow;");
+    sh.uniforms.uGlow = glowU;
+  };
+  const stGlowU = { value: .6 };
+  const stamenLoMat = new THREE.MeshBasicMaterial({fog:true});
+  const stamenMat = new THREE.MeshPhysicalMaterial({vertexColors:true, roughness:.22, metalness:0, clearcoat:1, clearcoatRoughness:.08, envMap:envTex, envMapIntensity:.9, transparent:true, opacity:.94, fog:true});
+  stamenMat.onBeforeCompile = sh=>{ sh.uniforms.uStGlow = stGlowU;
+    sh.fragmentShader = sh.fragmentShader.replace("#include <common>","#include <common>\nuniform float uStGlow;")
+      .replace("#include <emissivemap_fragment>","#include <emissivemap_fragment>\n totalEmissiveRadiance += vColor.rgb * uStGlow;"); };
+  const coreMat = new THREE.MeshBasicMaterial({map:glowTex, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, fog:true});
+  const domeMat = new THREE.MeshPhysicalMaterial({color:0xff9ed6, roughness:.03, metalness:0, clearcoat:1, clearcoatRoughness:.02, envMap:envTex, envMapIntensity:1.4, transparent:true, opacity:.2, depthWrite:false, fog:true, side:THREE.DoubleSide});
+  const socketMat = new THREE.MeshPhysicalMaterial({color:0xffeef6, roughness:.15, metalness:0, clearcoat:1, clearcoatRoughness:.1, envMap:envTex, envMapIntensity:1, transparent:true, opacity:.38, depthWrite:false, fog:true});
+  const barkMat = new THREE.MeshStandardMaterial({map:barkTex, bumpMap:barkTex, bumpScale:.0011, color:0xffffff, roughness:.78, metalness:.05});
+
+  const root = new THREE.Group(); scene.add(root);
+  let treeGroup=null, flowers=[], meshes=null, focusIdx=0, H=1.5;
+
+  // halo en la "pared" y charco de luz en el suelo
+  const haloMat = new THREE.SpriteMaterial({map:haloTex, color:0xff4fcf, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:0, fog:false});
+  const halo = new THREE.Sprite(haloMat); scene.add(halo);
+  const poolMat = new THREE.MeshBasicMaterial({map:poolTex, color:0xff4fcf, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:0});
+  const pool = new THREE.Mesh(new THREE.PlaneGeometry(1,1), poolMat); pool.rotation.x=-Math.PI/2; pool.position.y=0.001; scene.add(pool);
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(6,48), new THREE.MeshStandardMaterial({color:0x120a1a, roughness:.9})); floor.rotation.x=-Math.PI/2; scene.add(floor);
+
+  // pétalos cayendo
+  const NP = 140, pPos = new Float32Array(NP*3), pVel = new Float32Array(NP*2), fallRnd = R0(7);
+  const petalsFall = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({map:fallTex, size:0.03, color:0xff8be0, transparent:true, opacity:0, depthWrite:false, blending:THREE.AdditiveBlending, sizeAttenuation:true}));
+  petalsFall.geometry.setAttribute("position", new THREE.BufferAttribute(pPos,3));
+  function seedPetal(i, top){ const a=fallRnd()*Math.PI*2, r=0.15+fallRnd()*0.75*H; pPos[i*3]=Math.cos(a)*r; pPos[i*3+1]= top? H*(0.85+fallRnd()*0.4) : fallRnd()*H*1.2; pPos[i*3+2]=Math.sin(a)*r; pVel[i*2]=0.03+fallRnd()*0.06; pVel[i*2+1]=fallRnd()*6.28; }
+  scene.add(petalsFall);
+
+  /* ---------- árbol procedural ---------- */
+  function buildTree(size){
+    if(treeGroup){ root.remove(treeGroup); treeGroup.traverse(o=>{ if(o.geometry && ![flowerGeo,stamenGeo,stamenLoGeo,coreGeo,domeGeo,domeLoGeo,socketGeo].includes(o.geometry)) o.geometry.dispose(); }); }
+    const R = R0(size.id==="pequeno"?11:size.id==="grande"?37:23);
+    const segs=[], tips=[];
+    const up=new THREE.Vector3(0,1,0), tmpQ=new THREE.Quaternion();
+    let k=1;
+    function seg(a,b,r0,r1,worldScale){
+      const d=new THREE.Vector3().subVectors(b,a), len=d.length(); if(len<1e-4) return;
+      const g=new THREE.CylinderGeometry(r1,r0,len,7,1,true);
+      const uv=g.attributes.uv; for(let i=0;i<uv.count;i++) uv.setY(i, uv.getY(i)*len*(worldScale||1)/0.018);
+      tmpQ.setFromUnitVectors(up,d.clone().normalize());
+      g.applyMatrix4(new THREE.Matrix4().compose(a.clone().addScaledVector(d,.5), tmpQ, new THREE.Vector3(1,1,1)));
+      segs.push(g);
+    }
+    function perp(dir, az){ const t = Math.abs(dir.y)<.9? up : new THREE.Vector3(1,0,0); const a=new THREE.Vector3().crossVectors(dir,t).normalize(); return a.applyAxisAngle(dir, az); }
+    const pend=[];
+    function grow(p0, dir, len, r0, depth){
+      const bend = perp(dir, R()*6.28).multiplyScalar(len*0.09*R());
+      const pm = p0.clone().addScaledVector(dir,len*.5).add(bend);
+      const p1 = p0.clone().addScaledVector(dir,len).addScaledVector(bend,.4);
+      const rm=r0*.82, r1=r0*.64;
+      pend.push([p0,pm,r0,rm],[pm,p1,rm,r1]);
+      const d1 = new THREE.Vector3().subVectors(p1,pm).normalize();
+      if(depth>=3){
+        const n = 4 + Math.floor(R()*3);
+        for(let i=0;i<n;i++){ const t=.25+R()*.75; const s = t<.5? p0.clone().lerp(pm,t*2) : pm.clone().lerp(p1,(t-.5)*2);
+          const td = d1.clone().applyAxisAngle(perp(d1,R()*6.28), .55+R()*.6); td.y+=.25; td.normalize();
+          tips.push({s, e:s.clone().addScaledVector(td, .045+R()*.05), d:td}); }
+        tips.push({s:p1.clone().addScaledVector(d1,-.02), e:p1.clone().addScaledVector(d1,.03), d:d1});
+        return;
+      }
+      const kids = depth===0? 5 : depth===1? 3 : 2 + (R()<.45?1:0);
+      for(let i=0;i<kids;i++){
+        const t = depth===0? .45 + .55*(i/(kids-1)) : .45 + .55*R();
+        const s = t<.5? p0.clone().lerp(pm,t*2) : pm.clone().lerp(p1,(t-.5)*2);
+        const az = (i/kids)*Math.PI*2 + R()*.9 + depth*1.3;
+        const ang = depth===0? (i===kids-1? .12 : .55+R()*.4) : .38+R()*.5;
+        const nd = d1.clone().applyAxisAngle(perp(d1,az), ang); nd.y += depth===0? .1 : .18; nd.normalize();
+        grow(s, nd, len*(depth===0? .78 : .74)*(.85+R()*.3), r1*(depth===0? .62 : .7), depth+1);
+        if(depth>=1 && R()<.6){ const tt=.3+R()*.5; const ss=p0.clone().lerp(p1,tt); const td=d1.clone().applyAxisAngle(perp(d1,R()*6.28),.7+R()*.5); td.y+=.2; td.normalize(); tips.push({s:ss,e:ss.clone().addScaledVector(td,.05+R()*.04),d:td}); }
+      }
+    }
+    grow(new THREE.Vector3(0,0.035,0), up.clone(), 0.62, 0.024, 0);
+
+    let maxY=0; tips.forEach(t=>maxY=Math.max(maxY,t.e.y));
+    k = size.h / (maxY+0.02);
+    pend.forEach(([a,b,r0,r1])=>seg(a,b,r0,r1,k));
+    for(let i=tips.length-1;i>0;i--){ const j=Math.floor(R()*(i+1)); [tips[i],tips[j]]=[tips[j],tips[i]]; }
+    const keep = tips.slice(0, Math.min(tips.length, size.flowers));
+    keep.forEach(t=>seg(t.s,t.e,.0034,.0026,k));
+
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(THREE.BufferGeometryUtils.mergeBufferGeometries(segs), barkMat));
+    segs.forEach(s=>s.dispose());
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(.11/k,.13/k,.025/k,40), new THREE.MeshStandardMaterial({color:0x1b121f, roughness:.4, metalness:.5}));
+    base.position.y=.0125/k; g.add(base);
+    g.scale.setScalar(k);
+
+    const N = keep.length;
+    const fg = flowerGeo.clone(); fg.setAttribute("aPaint", new THREE.InstancedBufferAttribute(new Float32Array(N),1));
+    const petals = new THREE.InstancedMesh(fg, petalMat, N);
+    const stamens = new THREE.InstancedMesh(stamenLoGeo, stamenLoMat, N);
+    const cores = new THREE.InstancedMesh(coreGeo, coreMat, N);
+    const sockets = new THREE.InstancedMesh(socketGeo, socketMat, N);
+    const domes = new THREE.InstancedMesh(domeLoGeo, domeMat, N);
+    const M=new THREE.Matrix4(), q=new THREE.Quaternion(), roll=new THREE.Quaternion(), z=new THREE.Vector3(0,0,1), sc=new THREE.Vector3();
+    flowers = keep.map((t,i)=>{
+      q.setFromUnitVectors(z,t.d); roll.setFromAxisAngle(t.d, R()*6.28); q.premultiply(roll);
+      const s=(0.9+R()*0.3)/k; sc.set(s,s,s);
+      M.compose(t.e,q,sc); [petals,stamens,cores,sockets,domes].forEach(m=>m.setMatrixAt(i,M));
+      const dW = t.d.clone();
+      return { pos:t.e.clone().multiplyScalar(k), dir:dW, y:t.e.y, start:Infinity, p:0, jitter:(R()-.5)*0.16 };
+    });
+    stamens.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(N*3),3);
+    cores.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(N*3),3);
+    [petals,stamens,cores,domes,sockets].forEach(m=>g.add(m));
+    root.add(g); treeGroup=g; H=size.h; meshes={petals,stamens,cores,domes};
+
+    // flor protagonista: exterior, a media altura, mirando hacia fuera y algo hacia arriba
+    let best=-1e9, bi=0; flowers.forEach((f,i)=>{
+      const r=Math.hypot(f.pos.x,f.pos.z); const out=new THREE.Vector3(f.pos.x,0,f.pos.z).normalize();
+      const face = f.dir.dot(out) + f.dir.y*0.3;
+      let crowd=0; for(const o of flowers){ if(o!==f){ const dd=o.pos.distanceTo(f.pos); if(dd<0.07) crowd += (0.07-dd)/0.07; } }
+      const sc = r*1.0 + face*0.8 - Math.abs(f.pos.y/H-.6)*1.5 - crowd*0.9;
+      if(sc>best){best=sc;bi=i;} }); focusIdx=bi;
+    // la flor protagonista lleva el centro en alta definición
+    { const fm=new THREE.Matrix4(); petals.getMatrixAt(bi,fm);
+      const hero=new THREE.Group(); hero.add(new THREE.Mesh(stamenGeo, stamenMat)); hero.add(new THREE.Mesh(domeGeo, domeMat));
+      hero.matrixAutoUpdate=false; hero.matrix.copy(fm); g.add(hero);
+      const z0=new THREE.Matrix4().makeScale(0,0,0); stamens.setMatrixAt(bi,z0); domes.setMatrixAt(bi,z0); }
+
+    crownLight.position.set(0,H*.62,0); crownLight.distance=H*3.4;
+    halo.scale.setScalar(H*3.6); pool.scale.setScalar(H*2.4);
+    for(let i=0;i<NP;i++) seedPetal(i,false);
+    petalsFall.geometry.attributes.position.needsUpdate=true;
+  }
+
+  /* ---------- pintar flor a flor ---------- */
+  let cur = COLORS[0], painting=false, paintedFrac=0, coreK=1;
+  function startPaint(dur, delay=0){
+    const now=performance.now()/1000+delay;
+    const order = flowers.map((f,i)=>i).sort((a,b)=> (flowers[a].y+flowers[a].jitter) - (flowers[b].y+flowers[b].jitter));
+    order.forEach((idx,rank)=>{ flowers[idx].start = REDUCE? -1 : now + (rank/order.length)*dur; });
+    // la flor protagonista se pinta la última vez que se ve de cerca: siempre pintada
+    painting=true;
+  }
+  function applyColors(){
+    let done=0; const now=performance.now()/1000, N=flowers.length;
+    const pa=meshes.petals.geometry.attributes.aPaint.array, sa=meshes.stamens.instanceColor.array, ca=meshes.cores.instanceColor.array;
+    const st=cur.stamen;
+    for(let i=0;i<N;i++){
+      const f=flowers[i]; const p = Math.max(0,Math.min(1,(now-f.start)/0.45)); f.p=p; if(p>=1) done++;
+      const flash = Math.sin(Math.PI*p)*0.8;
+      pa[i] = p + flash;
+      for(let c=0;c<3;c++) sa[i*3+c] = (0.32 + (st[c]-0.32)*p)*(1+flash);
+      if(i===focusIdx) stamenMat.color.setScalar((0.42+0.58*p)*(1+flash*.6));
+      const core = (0.25 + p*0.95 + flash*0.9)*coreK; ca[i*3]=core; ca[i*3+1]=core*0.86; ca[i*3+2]=core*0.94;
+    }
+    meshes.petals.geometry.attributes.aPaint.needsUpdate=true; meshes.stamens.instanceColor.needsUpdate=true; meshes.cores.instanceColor.needsUpdate=true;
+    paintedFrac = N? done/N : 0;
+    if(done>=N) painting=false;
+    document.getElementById("count").textContent = done;
+    document.getElementById("prog").style.width = (paintedFrac*100).toFixed(1)+"%";
+  }
+  function tintScene(c){ recolorStamens(c); const at=atlasFor(c); petalMat.map = at; petalMat.needsUpdate=true; haloMat.color.setHex(c.halo); poolMat.color.setHex(c.halo); petalsFall.material.color.setHex(c.halo); crownLight.color.setHex(c.light); }
+
+  window.tree = {
+    setSize(s){ buildTree(s); applyColors(); startPaint(REDUCE?0:3.2, .1); },
+    setColor(c){ cur=c; tintScene(c); startPaint(REDUCE?0:2.6); },
+    repaint(){ startPaint(REDUCE?0:6); }
+  };
+  document.getElementById("repaint").addEventListener("click", ()=>window.tree.repaint());
+
+  const initSize = SIZES.find(s=>s.star)||SIZES[1];
+  buildTree(initSize); tintScene(cur); applyColors(); startPaint(REDUCE?0:7, .6);
+
+  /* ---------- cámara guiada por el scroll ---------- */
+  const STOPS = {
+    hero:      { theta: .15, phi:.10, dist:3.25, ty:.55, shift:.25 },
+    detalle:   { focus:true, dist:.072, shift:.2 },
+    proceso:   { theta:1.25, phi:-.16, dist:2.35, ty:.66, shift:.25 },
+    disena:    { theta:-.35, phi:.08, dist:3.45, ty:.52, shift:.27 },
+    preguntas: { theta:.7, phi:.42, dist:4.5, ty:.4, shift:.22 },
+  };
+  const sections = [...document.querySelectorAll("[data-stop]")];
+  let W=1,Hh=1, narrow=false;
+  const camPos=new THREE.Vector3(0,1,4), camTgt=new THREE.Vector3(0,.8,0); let camShift=.25, rotY=0, focusW=0;
+  const mouse={x:0,y:0}; addEventListener("pointermove",e=>{ mouse.x=e.clientX/innerWidth-.5; mouse.y=e.clientY/innerHeight-.5; },{passive:true});
+  const Y=new THREE.Vector3(0,1,0);
+
+  function stopPose(st, outPos, outTgt){
+    if(st.focus && flowers[focusIdx]){
+      const f=flowers[focusIdx];
+      const fw = f.pos.clone().applyAxisAngle(Y, rotY);
+      const dir = f.dir.clone().applyAxisAngle(Y, rotY);
+      // mirar la flor de frente, un poco ladeada para ver la copa y los estambres
+      const side = new THREE.Vector3().crossVectors(dir, Y).normalize();
+      const view = dir.clone().multiplyScalar(.92).addScaledVector(side,.32).addScaledVector(Y,.12).normalize();
+      outTgt.copy(fw).addScaledVector(dir, .004);
+      outPos.copy(outTgt).addScaledVector(view, st.dist*(narrow?1.25:1));
+      return;
+    }
+    outTgt.set(0, st.ty*H, 0);
+    const d = st.dist*(H/1.5)*(narrow? 1.02 : 1);
+    outPos.set(Math.sin(st.theta)*Math.cos(st.phi), Math.sin(st.phi), Math.cos(st.theta)*Math.cos(st.phi)).multiplyScalar(d).add(outTgt);
+  }
+  const pA=new THREE.Vector3(), tA=new THREE.Vector3(), pB=new THREE.Vector3(), tB=new THREE.Vector3();
+  function desired(){
+    const vc = innerHeight*0.5;
+    const cs = sections.map(s=>{ const r=s.getBoundingClientRect(); return r.top + Math.min(r.height, innerHeight)*0.5; });
+    let i=0; while(i<cs.length-1 && cs[i+1] < vc) i++;
+    let t=0; if(i<cs.length-1){ t=(vc-cs[i])/(cs[i+1]-cs[i]); t=Math.max(0,Math.min(1,t)); t=t*t*(3-2*t); }
+    if(cs[0] > vc) t=0;
+    const a=STOPS[sections[i].dataset.stop], b=STOPS[sections[Math.min(i+1,cs.length-1)].dataset.stop];
+    stopPose(a,pA,tA); stopPose(b,pB,tB);
+    // entre el árbol entero y el primer plano, interpolar en escala logarítmica de distancia
+    const fwA=a.focus?1:0, fwB=b.focus?1:0;
+    if(fwA!==fwB){
+      const dA=pA.distanceTo(tA), dB=pB.distanceTo(tB);
+      const tgt=tA.clone().lerp(tB,t);
+      const dirA=pA.clone().sub(tA).normalize(), dirB=pB.clone().sub(tB).normalize();
+      const dir=dirA.lerp(dirB,t).normalize();
+      const dist=Math.exp(Math.log(dA)+(Math.log(dB)-Math.log(dA))*t);
+      pA.copy(tgt).addScaledVector(dir,dist); tA.copy(tgt);
+    } else { pA.lerp(pB,t); tA.lerp(tB,t); }
+    const shift = narrow? 0 : a.shift + (b.shift-a.shift)*t;
+    return {pos:pA, tgt:tA, shift, fw: fwA+(fwB-fwA)*t};
+  }
+
+  function resize(){
+    W=innerWidth; Hh=innerHeight; narrow = W<820;
+    renderer.setSize(W,Hh,false); composer.setSize(W,Hh);
+    bloom.resolution.set(W/2,Hh/2);
+    camera.aspect=W/Hh; camera.fov = narrow? 42 : 34; camera.updateProjectionMatrix();
+  }
+  addEventListener("resize", resize); resize();
+
+  let last=performance.now()/1000, first=true;
+  const camDist={v:3};
+  function frame(){
+    const now=performance.now()/1000, dt=Math.min(.05, now-last); last=now;
+    if(painting) applyColors();
+    const d = desired();
+    focusW += (d.fw-focusW)*Math.min(1,dt*4);
+    if(!REDUCE) rotY += dt*0.07*Math.pow(1-focusW,3);
+    root.rotation.y = rotY;
+    const kk = first||REDUCE? 1 : 1-Math.exp(-dt*3.2); first=false;
+    const px = d.pos.clone();
+    if(!REDUCE){ const par=(1-focusW)*0.18 + focusW*0.006; px.x += mouse.x*par; px.y -= mouse.y*par*.7; }
+    // en primer plano la cámara se mueve en escala logarítmica para no atravesar ramas
+    camPos.lerp(px,kk); camTgt.lerp(d.tgt,kk); camShift += (d.shift-camShift)*kk;
+    camera.position.copy(camPos); camera.lookAt(camTgt);
+    camera.setViewOffset(W,Hh,-camShift*W,(narrow? 0.2*Hh*(1-focusW) : 0),W,Hh);
+    camDist.v = camPos.distanceTo(camTgt);
+
+    const back = new THREE.Vector3(0,H*.6,0).sub(camPos).setY(0).normalize();
+    halo.position.set(back.x*0.9, H*.6, back.z*0.9);
+    const glow = 0.12 + paintedFrac*0.62;
+    haloMat.opacity = glow*(1-focusW*.7); poolMat.opacity = glow*.55;
+    crownLight.intensity = 0.6 + paintedFrac*2.2;
+    // primer plano: luz suave de estudio para ver el papel de las ramas y las pinceladas
+    studio.position.copy(camPos).add(new THREE.Vector3(0,.05,0)); studio.intensity = 0.25 + focusW*0.4; studio.distance = 0.6 + (1-focusW)*3;
+    { const fwd=camTgt.clone().sub(camPos).normalize(), right=new THREE.Vector3().crossVectors(fwd,Y).normalize();
+      key.position.copy(camTgt).addScaledVector(right,-.6).addScaledVector(Y,.7).addScaledVector(fwd,-.5); key.target.position.copy(camTgt); key.intensity = focusW*1.25;
+      kick.position.copy(camTgt).addScaledVector(right,.7).addScaledVector(Y,.25).addScaledVector(fwd,.6); kick.target.position.copy(camTgt); kick.intensity = focusW*0.7; }
+    glowU.value = 1 - focusW*0.12; stGlowU.value = .6 - focusW*.45;
+
+    bloom.strength = 1.1 - focusW*0.85; bloom.threshold = 0.3 + focusW*0.6;
+    const ck = 1 - focusW*0.6; if(Math.abs(ck-coreK)>0.02){ coreK=ck; applyColors(); } bloom.radius = 0.6 - focusW*0.3;
+    scene.fog.density = 0.11*(1-focusW);
+    if(bokeh){ bokeh.enabled = focusW>0.03 && !narrow; if(bokeh.enabled){ const u=bokeh.uniforms; u.focus.value=camDist.v; u.aperture.value=0.1*focusW; u.maxblur.value=0.011; } }
+    if(!REDUCE){
+      for(let i=0;i<NP;i++){ pPos[i*3+1]-=pVel[i*2]*dt; pVel[i*2+1]+=dt*.8; pPos[i*3]+=Math.sin(pVel[i*2+1])*dt*.05; pPos[i*3+2]+=Math.cos(pVel[i*2+1]*.7)*dt*.04; if(pPos[i*3+1]<0.01) seedPetal(i,true); }
+      petalsFall.geometry.attributes.position.needsUpdate=true;
+    }
+    petalsFall.material.opacity = paintedFrac*0.85*(1-focusW);
+    composer.render();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ===== Encargos: se guardan en la base de datos de la página ===== */
+let db = null, isOwner = false, userApi = null;
+const ready = (async()=>{
+  try{ db = await window.claude?.use?.("db"); }catch(e){ db = null; }
+  try{ const u = await window.claude?.use?.("user"); userApi = u; isOwner = (await u?.isOwner?.()) ?? false; }catch(e){}
+  if(db && isOwner) startInbox();
+})();
+
+function orderText(o){
+  return `Encargo Flor por Flor\nTamaño: ${o.tamano} (${o.altura})\nColor: ${o.color}\nPrecio orientativo: ${eur(o.precio)}\nNombre: ${o.nombre}\nCiudad: ${o.ciudad||"-"}\nEmail: ${o.email||"-"}\nTeléfono: ${o.telefono||"-"}\nNota: ${o.mensaje||"-"}`;
+}
+document.getElementById("order-form").addEventListener("submit", async ev=>{
+  ev.preventDefault();
+  const { f, size, color } = current();
+  const err = document.getElementById("f-err");
+  const o = { tamano:size.name, altura:size.height, precio:size.price, color:color.name,
+    nombre:f.nombre.value.trim(), ciudad:f.ciudad.value.trim(), email:f.email.value.trim(), telefono:f.telefono.value.trim(),
+    mensaje:f.mensaje.value.trim().slice(0,1500), estado:"nuevo", creado:Date.now() };
+  if(!o.nombre){ err.textContent = "Escribe tu nombre para saber de quién es el encargo."; f.nombre.focus(); return; }
+  if(!o.email && !o.telefono){ err.textContent = "Déjanos un email o un teléfono para poder confirmarte el encargo."; f.email.focus(); return; }
+  if(o.email && !/^\S+@\S+\.\S+$/.test(o.email)){ err.textContent = "Revisa el email: parece que le falta algo."; f.email.focus(); return; }
+  err.textContent = "";
+  const btn = document.getElementById("f-send"); btn.disabled = true; btn.textContent = "Enviando…";
+  await ready;
+  let saved = false, uid = null;
+  const ref = (size.id+"_"+color.id+"_"+Date.now().toString(36)).slice(0,200);
+  o.referencia = ref;
+  if(PAY_ONLINE && STRIPE_LINKS[size.id]) o.estado = "pendiente de pago";
+  if(db && userApi){ try{ uid = await userApi.id(); if(uid){ await db.doc("encargos/"+uid).set(o); saved = true; } }catch(e){ saved = false; } }
+  const link = STRIPE_LINKS[size.id];
+  if(link){
+    const u = new URL(link); u.searchParams.set("client_reference_id", ref); if(o.email) u.searchParams.set("prefilled_email", o.email);
+    o.payUrl = u.toString();
+  }
+  showDone(o, saved, size);
+});
+function showDone(o, saved, size){
+  const slot = document.getElementById("order-slot");
+  const txt = orderText(o);
+  slot.innerHTML = (saved || o.payUrl) ? `
+    <div class="done" role="status">
+      <svg width="44" height="44" style="color:var(--glow);filter:drop-shadow(0 0 10px var(--glow))"><use href="#blossom"/></svg>
+      <h3>${o.payUrl ? `Último paso, ${esc(o.nombre.split(" ")[0])}` : `¡Encargo recibido, ${esc(o.nombre.split(" ")[0])}!`}</h3>
+      <p style="color:var(--muted)">Cerezo ${esc(o.tamano.toLowerCase())} en ${esc(o.color.toLowerCase())}. ${o.payUrl ? `Paga en la página segura de Stripe y empezamos a pintar sus ≈ ${size.flowers} flores. Te escribiremos con la fecha de entrega.` : `Te escribiremos para confirmar precio y fecha antes de pintar sus ≈ ${size.flowers} flores.`}</p>
+      ${o.payUrl ? `<a class="btn" href="${esc(o.payUrl)}" target="_blank" rel="noopener">Pagar ${eur(o.precio)} con tarjeta</a><p class="fine">Se abre la página de pago segura de Stripe. Tu referencia: ${esc(o.referencia)}</p>` : ""}
+      <button class="btn ghost" type="button" id="again">Hacer otro encargo</button>
+    </div>` : `
+    <div class="done" role="status">
+      <h3>Casi listo</h3>
+      <p style="color:var(--muted)">Desde aquí no hemos podido guardar tu encargo. Cópialo y envíanoslo por mensaje:</p>
+      <pre class="copybox" id="copytxt">${esc(txt)}</pre>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">${o.payUrl ? `<a class="btn" href="${esc(o.payUrl)}" target="_blank" rel="noopener">Pagar ${eur(o.precio)} con tarjeta</a>` : ""}<button class="btn ${o.payUrl?"ghost":""}" type="button" id="copy">Copiar encargo</button><button class="btn ghost" type="button" id="again">Volver</button></div>
+    </div>`;
+  document.getElementById("again").onclick = () => location.reload();
+  const c = document.getElementById("copy");
+  if(c) c.onclick = async () => {
+    try{ await navigator.clipboard.writeText(txt); c.textContent = "Copiado"; }
+    catch(e){ const r=document.createRange(); r.selectNodeContents(document.getElementById("copytxt")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); c.textContent = "Selecciónalo y cópialo"; }
+  };
+}
+
+/* Panel del taller (solo propietarios) */
+const NEXT = { "pendiente de pago":"pagado", pagado:"confirmado", nuevo:"confirmado", confirmado:"enviado", enviado:"nuevo" };
+function startInbox(){
+  const sec = document.getElementById("taller"); sec.hidden = false;
+  const body = document.getElementById("inbox-body");
+  db.collection("encargos").orderBy("creado","desc").limit(500).onSnapshot(snap=>{
+    if(snap.empty) return;
+    body.innerHTML = snap.docs.map(d=>{
+      const o = d.data() || {};
+      const date = o.creado ? new Date(o.creado).toLocaleDateString("es-ES",{day:"numeric",month:"short"}) : "–";
+      return `<tr><td style="white-space:nowrap">${esc(date)}</td>
+        <td>${esc(o.nombre)}<br><span style="color:var(--muted)">${esc(o.ciudad)}</span></td>
+        <td>${esc(o.email)}<br>${esc(o.telefono)}${o.referencia?`<br><span style="color:var(--muted);font-size:.8rem">ref. ${esc(o.referencia)}</span>`:""}</td>
+        <td style="white-space:nowrap">${esc(o.tamano)} · ${esc(o.color)}<br><span style="color:var(--muted)">${o.precio?eur(o.precio):""}</span></td>
+        <td style="max-width:28ch;color:var(--muted)">${esc(o.mensaje)}</td>
+        <td><button class="state" data-id="${esc(d.id)}" data-s="${esc(o.estado||"nuevo")}">${esc(o.estado||"nuevo")}</button></td></tr>`;
+    }).join("");
+  }, ()=>{ sec.hidden = true; });
+  body.addEventListener("click", async e=>{
+    const b = e.target.closest(".state"); if(!b) return;
+    const next = NEXT[b.dataset.s] || "nuevo"; b.dataset.s = next; b.textContent = next;
+    try{ await db.doc("encargos/"+b.dataset.id).update({estado:next}); }catch(err){}
+  });
+}
+</script>
+
+</body>
+</html>
