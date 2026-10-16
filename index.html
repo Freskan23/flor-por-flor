@@ -279,6 +279,23 @@ dialog.legal::backdrop{background:rgba(8,4,12,.7);backdrop-filter:blur(6px)}
 .legal-body p{color:color-mix(in srgb,var(--ink) 85%,var(--muted))}
 .legal-body .model{padding:14px;border:1px dashed var(--line);border-radius:12px}
 body.no3d .st-ruler, body.no3d .st-hint, body.no3d .meter, body.no3d .st-tools{display:none}
+
+.legal-line{font-size:.78rem;color:var(--muted);margin:0;line-height:1.45}
+.legal-line a{color:var(--petal)}
+.thanks{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px max(16px, env(safe-area-inset-right,0px)) 20px max(16px, env(safe-area-inset-left,0px));background:radial-gradient(60% 60% at 50% 40%, color-mix(in srgb,var(--glow) 18%,transparent), transparent 70%), rgba(8,4,12,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:auto}
+.th-card{width:min(560px,100%);display:grid;gap:16px;justify-items:start;padding:clamp(22px,4vw,38px);border-radius:26px;background:color-mix(in srgb,var(--night-2) 88%,transparent);border:1px solid color-mix(in srgb,var(--petal) 22%,transparent);box-shadow:0 40px 120px -40px var(--glow);animation:panelIn .7s cubic-bezier(.2,.8,.2,1) both}
+.th-ic{color:var(--glow);filter:drop-shadow(0 0 14px var(--glow));animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.th-card h2{font-size:clamp(1.8rem,1.3rem + 2vw,2.6rem)}
+.th-card h2 em{font-style:italic;color:var(--petal);display:block}
+.th-steps{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:0;width:100%}
+.th-steps li{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--line);font-size:.95rem}
+.th-steps b{font-family:var(--f-hand);font-weight:700;font-size:1.3rem;color:var(--petal);line-height:1.1}
+.th-steps span{color:color-mix(in srgb,var(--ink) 85%,var(--muted))}
+.th-help{color:var(--muted);font-size:.9rem;margin:0}
+.th-help a{color:var(--petal)}
+@media (max-width:480px){.th-steps li{grid-template-columns:1fr;gap:2px}}
+
 mark.todo{background:#ffd36b;color:#2b1a00;border-radius:4px;padding:0 4px;font-weight:600}
 
 /* ===== probador (configurador a pantalla completa) ===== */
@@ -679,6 +696,23 @@ legend .hand{font-size:1.25rem;letter-spacing:0;text-transform:none;margin-left:
 
 <a class="wa" id="wa" href="#" target="_blank" rel="noopener" hidden aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.3 1.4 3.6c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5 0-.1-.3-.2-.6-.4z"/></svg><span>¿Dudas? Escríbenos</span></a>
 
+
+<div class="thanks" id="thanks" hidden role="dialog" aria-modal="true" aria-labelledby="th-title">
+  <div class="th-card">
+    <svg width="54" height="54" class="th-ic" aria-hidden="true"><use href="#blossom"/></svg>
+    <p class="eyebrow">Pedido recibido</p>
+    <h2 id="th-title">¡Gracias! <em>Empezamos a pintar tu cerezo.</em></h2>
+    <ol class="th-steps">
+      <li><b>Ahora</b><span>Te llega por email el recibo del pago.</span></li>
+      <li><b>En breve</b><span id="th-fecha">Te escribimos con la fecha de envío.</span></li>
+      <li id="th-regalo" hidden><b>Regalo</b><span>Te preguntaremos qué quieres que diga la nota escrita a mano.</span></li>
+      <li><b>En el taller</b><span>Pintamos sus flores una a una y lo revisamos encendido.</span></li>
+      <li><b>En tu casa</b><span>Llega en caja reforzada. Abre las ramas, enchúfalo y apaga la luz.</span></li>
+    </ol>
+    <p class="th-help" id="th-help"></p>
+    <button type="button" class="btn" id="th-close">Volver a la web</button>
+  </div>
+</div>
 <dialog class="legal" id="legal-dlg" aria-labelledby="legal-title">
   <div class="legal-in">
     <header><h2 id="legal-title"></h2><button type="button" class="st-x" id="legal-x" aria-label="Cerrar">✕</button></header>
@@ -766,7 +800,7 @@ function updateSum(){
   document.getElementById("total").textContent = size.flowers;
   document.getElementById("color-name").textContent = color.name.toLowerCase();
   document.getElementById("st-ruler-l").textContent = size.height;
-  if(DIRECT && PAY_ONLINE){ document.getElementById("f-send").innerHTML = `Pagar ${eur(size.price)} <span aria-hidden="true">→</span>`; }
+  if(DIRECT && PAY_ONLINE){ document.getElementById("f-send").innerHTML = document.getElementById("st-next").innerHTML = `Pagar ${eur(size.price)} <span aria-hidden="true">→</span>`; }
   document.getElementById("st-summary").innerHTML = `Cerezo <b>${size.name.toLowerCase()} de ${size.height}</b> con flores <b>${color.name.toLowerCase()}</b> · <b>${eur(size.price)}</b>`;
 }
 updateSum();
@@ -967,15 +1001,31 @@ const SFX = (()=>{
 
   // regalo
   const rg=document.getElementById("f-regalo"), gn=document.querySelector(".gift-note");
-  if(DIRECT) rg.parentElement.querySelector("small").textContent = "Lo enviamos envuelto, con una nota escrita a mano y sin el precio dentro. Gratis. Después del pago te escribimos para saber qué quieres que diga la nota.";
+  if(DIRECT) rg.parentElement.querySelector("small").textContent = "Envuelto, con una nota escrita a mano y sin el precio dentro. Gratis. Te preguntamos el texto de la nota tras el pago.";
   rg.addEventListener("change", ()=>{ gn.hidden=!rg.checked || DIRECT; if(rg.checked) SFX.color(); });
+})();
+
+/* ===== Gracias (vuelta desde Stripe) ===== */
+(()=>{
+  const q=new URLSearchParams(location.search); if(!q.has("gracias")) return;
+  const th=document.getElementById("thanks"); th.hidden=false; document.body.classList.add("in-thanks");
+  let info=null; try{ info=JSON.parse(sessionStorage.getItem("fpf-nota")||"null"); }catch(e){}
+  if(info && info.regalo) document.getElementById("th-regalo").hidden=false;
+  if(NEGOCIO.envio.plazo) document.getElementById("th-fecha").textContent = `Te escribimos con la fecha de envío. Suele llegar en ${NEGOCIO.envio.plazo}.`;
+  const help=[]; if(NEGOCIO.whatsapp) help.push(`<a href="https://wa.me/${NEGOCIO.whatsapp.replace(/\D/g,"")}" target="_blank" rel="noopener">WhatsApp</a>`); if(NEGOCIO.email) help.push(`<a href="mailto:${esc(NEGOCIO.email)}">${esc(NEGOCIO.email)}</a>`);
+  document.getElementById("th-help").innerHTML = help.length ? `¿Alguna duda? Escríbenos por ${help.join(" o ")}.` : "";
+  history.replaceState(null,"",location.pathname);
+  setTimeout(()=>window.tree?.repaint(), 400);
+  const close=()=>{ th.hidden=true; document.body.classList.remove("in-thanks"); };
+  document.getElementById("th-close").addEventListener("click", close);
+  addEventListener("pointerdown", function once(){ SFX.done(); removeEventListener("pointerdown", once, true); }, true);
 })();
 /* ===== Probador: abrir, pasos, vistas ===== */
 const studioEl = document.getElementById("studio");
 function setStep(n){
   studioEl.querySelectorAll(".st-step").forEach(el=>el.hidden = (+el.dataset.step!==n));
   studioEl.classList.toggle("step2", n===2);
-  document.getElementById("st-step-label").textContent = n===1 ? "Paso 1 de 2 · Tu cerezo" : "Paso 2 de 2 · Tus datos";
+  document.getElementById("st-step-label").textContent = DIRECT ? "Tu cerezo" : (n===1 ? "Paso 1 de 2 · Tu cerezo" : "Paso 2 de 2 · Tus datos");
   document.getElementById("st-title").textContent = n===1 ? "Diseña tu cerezo" : "¿A quién se lo enviamos?";
   document.getElementById("order-slot").scrollTop = 0;
   if(n===2) setTimeout(()=>document.getElementById("f-nombre").focus({preventScroll:true}), 350);
@@ -1002,7 +1052,19 @@ function closeStudio(){
 document.querySelectorAll("[data-open-studio]").forEach(b=>b.addEventListener("click",e=>{ e.preventDefault(); openStudio(); }));
 document.getElementById("st-close").addEventListener("click", closeStudio);
 addEventListener("keydown", e=>{ if(e.key==="Escape" && !studioEl.hidden) closeStudio(); });
-document.getElementById("st-next").addEventListener("click", ()=>{ setStep(2); SFX.step(); });
+if(DIRECT){
+  // web pública: todo en un paso (regalo + pagar), Stripe pide dirección y teléfono
+  const s1=studioEl.querySelector('.st-step[data-step="1"]'), foot=s1.querySelector(".st-foot");
+  const gift=studioEl.querySelector(".gift"), err=document.getElementById("f-err");
+  const line=document.createElement("p"); line.className="legal-line";
+  line.innerHTML='Al pagar aceptas las <a href="#legal-condiciones" data-legal="condiciones">condiciones de venta</a> y la <a href="#legal-privacidad" data-legal="privacidad">política de privacidad</a>. En la página de pago te pedimos la dirección de envío.';
+  s1.insertBefore(gift, foot); s1.insertBefore(line, foot); s1.insertBefore(err, foot);
+  studioEl.querySelector(".consent").hidden=true;
+  document.getElementById("st-step-label").textContent="Tu cerezo";
+}
+document.getElementById("st-next").addEventListener("click", ()=>{
+  if(DIRECT){ document.getElementById("order-form").requestSubmit(); return; }
+  setStep(2); SFX.step(); });
 document.getElementById("st-back").addEventListener("click", ()=>setStep(1));
 studioEl.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click", ()=>setView(b.dataset.view)));
 document.getElementById("st-light").addEventListener("click", e=>{
@@ -1601,9 +1663,10 @@ document.getElementById("order-form").addEventListener("submit", async ev=>{
     if(!o.email && !o.telefono){ err.textContent = "Déjanos un email o un teléfono para poder confirmarte el encargo."; f.email.focus(); return; }
     if(o.email && !/^\S+@\S+\.\S+$/.test(o.email)){ err.textContent = "Revisa el email: parece que le falta algo."; f.email.focus(); return; }
   }
-  if(!f.acepto.checked){ err.textContent = "Para continuar, acepta las condiciones de venta y la política de privacidad."; f.acepto.focus(); return; }
+  if(!DIRECT && !f.acepto.checked){ err.textContent = "Para continuar, acepta las condiciones de venta y la política de privacidad."; f.acepto.focus(); return; }
   err.textContent = "";
-  const btn = document.getElementById("f-send"); btn.disabled = true; btn.textContent = DIRECT ? "Abriendo el pago seguro…" : "Enviando…";
+  const btn = document.getElementById(DIRECT ? "st-next" : "f-send"); btn.disabled = true; btn.textContent = DIRECT ? "Abriendo el pago seguro…" : "Enviando…";
+  addEventListener("pageshow", e=>{ if(e.persisted){ btn.disabled=false; updateSum(); } }, {once:true});
   const ref = [size.id, color.id, regalo?"regalo":"", Date.now().toString(36)].filter(Boolean).join("_").slice(0,200);
   o.referencia = ref;
   const link = STRIPE_LINKS[size.id];
